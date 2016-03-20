@@ -1,9 +1,7 @@
-Go Reactive Activator
-=====================
+Spark app
+=========
 
-The motivation: [Go Reactive Activator Contest: Scala Days Edition](http://typesafe.com/blog/go-reactive-activator-contest-scala-days-edition)
+MLlib
+Spark streaming
 
-### Open questions
-* What is Apache Spark? What are Spark components?
-* What is Typesafe Activator? How to create one?
-* What are the use cases for Spark and Scala?
+Spark version 1.6.1, Hadoop 2.6.0
