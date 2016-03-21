@@ -1,0 +1,36 @@
+
+lazy val commonSettings = Seq(
+  organization := "gni.kraps",
+  version := "0.1-SNAPSHOT",
+  scalaVersion := "2.11.7"
+)
+
+lazy val generator = (project in file(".")).
+  settings(commonSettings: _*).
+  settings(
+    name := "gni.kraps.generator",
+    crossPaths := false,
+    libraryDependencies ++= {
+      val akkaVersion = "2.3.9"
+      val sprayVersion = "1.3.3"
+      val kafkaVersion = "0.9.0.1"
+      Seq(
+        "org.apache.kafka" %% "kafka" % kafkaVersion
+          exclude("javax.jms", "jms")
+          exclude("com.sun.jdmk", "jmxtools")
+          exclude("com.sun.jmx", "jmxri")
+          exclude("org.slf4j", "slf4j-simple"),
+        "com.datastax.cassandra" % "cassandra-driver-core" % "3.0.0",
+        "com.typesafe.akka" %% "akka-actor" % akkaVersion,
+        "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
+        "com.typesafe.akka" %% "akka-testkit" % akkaVersion % "test",
+        "io.spray" %% "spray-can" % sprayVersion,
+        "io.spray" %% "spray-routing" % sprayVersion,
+        "io.spray" %% "spray-testkit" % sprayVersion % "test",
+        "io.spray" %% "spray-json" % "1.3.2",
+        "org.scalatest" %% "scalatest" % "2.2.6" % "test",
+        "ch.qos.logback" % "logback-classic" % "1.1.6",
+        "ch.qos.logback" % "logback-core" % "1.1.6"
+      )
+    }
+  )
