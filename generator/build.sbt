@@ -5,7 +5,7 @@ lazy val commonSettings = Seq(
   scalaVersion := "2.11.7"
 )
 
-lazy val stream = (project in file(".")).
+lazy val generator = (project in file(".")).
   settings(commonSettings: _*).
   settings(
     name := "gni.kraps.generator",
