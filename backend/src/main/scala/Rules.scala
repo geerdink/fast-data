@@ -16,5 +16,11 @@ object Rules{
     }
   }
 
-
+  // Offer ING mobile App for users whom browse MING by their mobile
+  def offerINGApp(message: String): String ={
+    if (message != "Diverse PC&Laptop"){
+      if (message.startsWith("ip")) "Apple" else "Android"
+      }
+    else "None"
+    }
 }
