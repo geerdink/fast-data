@@ -1,7 +1,18 @@
 package sparking
 
+import org.apache.spark.streaming.{Seconds, StreamingContext}
+
 object SimpleApp {
   def main(args: Array[String]) {
+
+    val ssc = new StreamingContext(conf, Seconds(5))
+
+    val stream = ssc.socketStream("localhost", 7777)
+
+    //stream.
+
+    ssc.start()
+    ssc.awaitTermination()
 
     //val conf = new SparkConf().setAppName("SparkING").setMaster("local[2]")
     //    .set("spark.cassandra.connection.host", "localhost")
