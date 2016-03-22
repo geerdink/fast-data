@@ -1,0 +1,6 @@
+CREATE TABLE sparking.offers(
+  user_id varchar PRIMARY KEY,
+  offer_id varchar PRIMARY KEY,
+  offer_name varchar,
+  score double,
+);
