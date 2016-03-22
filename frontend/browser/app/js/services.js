@@ -9,15 +9,17 @@ factory('restAPIservice', function($http) {
     restAPI.getNames = function() {
         return $http({
             //method: 'JSONP',
+            method: 'GET',
             //url: 'http://ergast.com/api/f1/2013/driverStandings.json?callback=JSON_CALLBACK'
             //url: 'http://localhost:8080/customer?callback=JSON_CALLBACK'
-            url: 'http://localhost:8080/customer/'
+            url: 'http://172.16.33.169:8080/customer/'
         });
     }
 
     restAPI.getMe = function(theName) {
         return $http({
             //method: 'JSONP',
+            method: 'GET',
             //url: 'http://ergast.com/api/f1/2013/driverStandings.json?callback=JSON_CALLBACK'
             //url: 'http://localhost:8080/customer?callback=JSON_CALLBACK'
             url: 'http://172.16.33.16:8085/hello/' + theName
