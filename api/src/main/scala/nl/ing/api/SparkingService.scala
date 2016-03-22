@@ -5,7 +5,7 @@ import spray.routing._
 import spray.http._
 import MediaTypes._
 
-class APIService extends Actor with MyService {
+class APIService extends Actor with SparkingService {
 
     // the HttpService trait defines only one abstract member, which
     // connects the services environment to the enclosing actor or test
@@ -14,13 +14,13 @@ class APIService extends Actor with MyService {
     // this actor only runs our route, but you could add
     // other things here, like request stream processing
     // or timeout handling
-    def receive = runRoute(myRoute)
+    def receive = runRoute(apiRoute)
   }
 
 // this trait defines our service behavior independently from the service actor
-trait MyService extends HttpService {
+trait SparkingService extends HttpService {
 
-  val myRoute =
+  val apiRoute =
     path("") {
       get {
         respondWithMediaType(`text/html`) { // XML is marshalled to `text/xml` by default, so we simply override here
@@ -38,7 +38,7 @@ trait MyService extends HttpService {
       get{
         respondWithMediaType(`text/plain`) { //Just return plain text
           complete{
-            s"You requested: $pathVariable" //Will respond with what you send within the URL
+            ("You requested: "+ pathVariable +"\n")  //Will respond with what you send within the URL
           }
         }
       }
