@@ -2,7 +2,7 @@ package sparking.rules
 
 import sparking.prediction.Predictor
 
-object IO{
+object RuleEngine{
 
   def receive(message: String): Unit = {
     println("Received message from Kafka: " + message)
