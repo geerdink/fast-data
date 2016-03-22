@@ -1,4 +1,4 @@
-name := "scala-vacature-scraper"
+name := "sparking-api"
 
 version       := "0.1"
 
