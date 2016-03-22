@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rest app</title>
+</head>
+
+<body ng-app="NameListApp" ng-controller="driversController">
+<input type="text" ng-model="nameFilter" placeholder="Search..."/>
+<table>
+    <thead>
+    <tr><th colspan="4">Great list of names</th></tr>
+    </thead>
+    <tbody>
+    <!--<tr ng-repeat="name in nameList | filter: searchFilter">-->
+        <!--<td>{{$index + 1}}</td>-->
+        <!--<td>-->
+            <!--{{name.firstName}}&nbsp;{{name.lastName}}-->
+        <!--</td>-->
+        <!--<td>{{name.birthday}}</td>-->
+    <!--</tr>-->
+    </tbody>
+</table>
+<script src="bower_components/angular/angular.js"></script>
+<script src="bower_components/angular-route/angular-route.js"></script>
+<script src="js/app.js"></script>
+<script src="js/services.js"></script>
+<script src="js/controllers.js"></script>
+</body>
+
+</html>
