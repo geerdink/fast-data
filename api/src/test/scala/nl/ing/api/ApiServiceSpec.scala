@@ -25,5 +25,13 @@ class ApiServiceSpec extends FunSpec with SparkingService with ShouldMatchers wi
         responseAs[String] should include("Beleggen")
       }
     }
+
+//    it("should accept GET request on Offers") {
+//      Get(s"/getOffers/Jan") ~> sealRoute(apiRoute) ~>  check {
+//
+//        status shouldBe OK
+//        responseAs[String] should include("Beleggen")
+//      }
+//    }
   }
 }
