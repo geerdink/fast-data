@@ -1,6 +1,6 @@
 object Rules{
 
-  def passThrough(input: String)={
+  def passThrough(input: String): String={
       input
   }
 
