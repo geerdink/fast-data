@@ -15,8 +15,8 @@ object Main extends App {
   // create and start our service actor
   val service = system.actorOf(Props[APIService], "sparking-api-service")
 
-  implicit val timeout = Timeout(5.seconds)
-  // start a new HTTP server on port 8080 with our service actor as the handler
-  IO(Http) ? Http.Bind(service, interface = "localhost", port = 8080)
+  implicit val timeout = Timeout(10.seconds)
+  // start a new HTTP server on port 8081 with our service actor as the handler
+  IO(Http) ? Http.Bind(service, interface = "172.16.33.16", port = 8085)
 
 }
