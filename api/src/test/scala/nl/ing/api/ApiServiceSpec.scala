@@ -1,10 +1,12 @@
 package nl.ing.api
 
+
 import org.scalatest.FunSpec
 import org.scalatest.matchers.ShouldMatchers
 import spray.testkit.ScalatestRouteTest
 import spray.http.HttpRequest
 import spray.http.StatusCodes._
+
 
 
 /**
@@ -14,12 +16,22 @@ class ApiServiceSpec extends FunSpec with SparkingService with ShouldMatchers wi
 
   implicit def actorRefFactory = system
 
+
   describe("the GET path") {
     it("should accept GET request") {
-      Get(s"/hello/Niek") ~> sealRoute(apiRoute) ~>  check {
+      Get(s"/hello/Piet") ~> sealRoute(apiRoute) ~>  check {
+
         status shouldBe OK
-        responseAs[String] should include("Niek")
+        responseAs[String] should include("Beleggen")
       }
     }
+
+//    it("should accept GET request on Offers") {
+//      Get(s"/getOffers/Jan") ~> sealRoute(apiRoute) ~>  check {
+//
+//        status shouldBe OK
+//        responseAs[String] should include("Beleggen")
+//      }
+//    }
   }
 }
