@@ -1,6 +1,9 @@
 package nl.ing.api
 
 import akka.actor.Actor
+import java.net.URI
+
+import com.datastax.driver.core.{Cluster, QueryOptions, ConsistencyLevel}
 import spray.http.HttpHeaders.RawHeader
 import spray.routing._
 import spray.http._
@@ -40,8 +43,53 @@ trait SparkingService extends HttpService {
     )
   )
 
-  def getOffers(userId: String): String =
-  {
+
+  //taken from: http://manuel.kiessling.net/2015/01/19/setting-up-a-scala-sbt-multi-project-with-cassandra-connectivity-and-migrations/
+  object DatabaseHelper {
+
+    def createSessionAndInitKeyspace(uri: CassandraConnectionUri,
+                                     defaultConsistencyLevel: ConsistencyLevel = QueryOptions.DEFAULT_CONSISTENCY_LEVEL) = {
+      val cluster = new Cluster.Builder().
+        addContactPoints(uri.hosts.toArray: _*).
+        withPort(uri.port).
+        withQueryOptions(new QueryOptions().setConsistencyLevel(defaultConsistencyLevel)).build
+
+      val session = cluster.connect
+      session.execute(s"USE ${uri.keyspace}")
+      session
+    }
+  }
+
+  case class CassandraConnectionUri(connectionString: String) {
+    private val uri = new URI(connectionString)
+
+    private val additionalHosts = Option(uri.getQuery) match {
+      case Some(query) => query.split('&').map(_.split('=')).filter(param => param(0) == "host").map(param => param(1)).toSeq
+      case None => Seq.empty
+    }
+
+    val host = uri.getHost
+    val hosts = Seq(uri.getHost) ++ additionalHosts
+    val port = uri.getPort
+    val keyspace = "sparking"
+  }
+
+  def getOffersFromDb(userId: String): String =  {
+
+    val uri = CassandraConnectionUri("localhost:9042")
+    println("uri set")
+    val session = DatabaseHelper.createSessionAndInitKeyspace(uri)
+    println("session set")
+    val result = session.execute("SELECT * FROM sparking.offers WHERE id = 2;")
+
+    println("query done")
+    /*val json =
+      ("offers" ->
+        ("user-id" -> "Piet"))*/
+    writePretty(result)
+  }
+
+  def getOffers(userId: String): String =  {
     val belegOffer = Offer(1, "Beleggen", 0.42)
     val spaarOffer = Offer(2, "Sparen", 0.52)
     val leenOffer = Offer(3, "Lenen", 0.32)
@@ -73,10 +121,20 @@ trait SparkingService extends HttpService {
           respondWithMediaType(`text/plain`) {
             complete{
               getOffers(input)
-              //("You requested: "+ pathVariable +"\n")  //Will respond with what you send within the URL
             }
           }
         }
       }
     }
+  path("getOffers" / Segment) { input => //The pathvariable will be /hello/{pathVariable}
+    get{
+      respondWithHeader(RawHeader("Access-Control-Allow-Origin","*")){
+        respondWithMediaType(`text/plain`) {
+          complete{
+            getOffersFromDb(input)
+          }
+        }
+      }
+    }
+  }
 }
