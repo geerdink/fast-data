@@ -1,8 +1,8 @@
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._
 
-object SimpleApp {
-  def main(args: Array[String]) {
+object SimpleApp extends App {
+
     val logFile = "README.md"
     val sc = new SparkContext("local", "Simple App", "~/oss/spark",
       List("target/scala-2.10/spark-activator_2.10-1.0.jar"))
@@ -10,5 +10,4 @@ object SimpleApp {
     val numAs = logData.filter(_.contains("a")).count()
     val numBs = logData.filter(_.contains("b")).count()
     println("Lines with a: %s, Lines with b: %s".format(numAs, numBs))
-  }
 }
