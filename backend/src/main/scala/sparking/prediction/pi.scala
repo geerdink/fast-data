@@ -1,9 +1,12 @@
+package sparking.prediction
+
 /**
   * Created by Bas on 22-3-2016.
   */
 
-import scala.math.random
 import org.apache.spark._
+
+import scala.math.random
 
 object Pi {
   def Calculate(sc: SparkContext) = {

@@ -1,3 +1,7 @@
+package sparking.rules
+
+import sparking.prediction.Predictor
+
 object IO{
 
   def receive(message: String): Unit = {

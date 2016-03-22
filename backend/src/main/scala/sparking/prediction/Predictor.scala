@@ -1,5 +1,6 @@
+package sparking.prediction
+
 import org.apache.spark.{SparkConf, SparkContext}
-import com.datastax.spark.connector._
 
 object Predictor {
 

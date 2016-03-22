@@ -1,5 +1,4 @@
-import org.apache.spark.{SparkConf, SparkContext}
-import com.datastax.spark.connector._
+package sparking
 
 object SimpleApp {
   def main(args: Array[String]) {

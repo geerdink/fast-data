@@ -1,3 +1,5 @@
+package sparking.rules
+
 object Rules{
 
   def passThrough(input: String): String={
