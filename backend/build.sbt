@@ -6,7 +6,7 @@ name := """SparkING"""
 
 version := "1.0"
 
-scalaVersion := "2.10.4"
+scalaVersion := "2.10.6"
 
 //resolvers ++= Seq(
 //  "Typesafe repository snapshots" at "http://repo.typesafe.com/typesafe/snapshots/",
@@ -27,17 +27,20 @@ resolvers ++= Seq(
   Resolver.url("bintray-sbt-plugins", url("http://dl.bintray.com/sbt/sbt-plugin-releases"))(Resolver.ivyStylePatterns)
 )
 
-libraryDependencies ++= Seq(
-  "org.apache.spark" %% "spark-core" % "1.6.0" % "provided",
-  "org.apache.spark" %% "spark-hive" % "1.6.0" % "provided",
-  "org.apache.spark" %% "spark-sql" % "1.6.0" % "provided",
-  "org.apache.spark" %% "spark-streaming" % "1.6.0" % "provided",
-  "org.apache.spark" %% "spark-mllib" % "1.6.0" % "provided",
-  "org.apache.spark" %% "spark-graphx" % "1.6.0" % "provided",
-  "org.apache.spark" %% "spark-streaming-kafka" % "1.6.0"
- // "com.datastax.spark" %% "spark-cassandra-connector" % "1.6.0-M1"
-  //"com.websudos" %% "phantom-dsl_2.10" % "1.22.0"
-)
+libraryDependencies ++= {
+  val sparkVersion = "1.6.1"
+  Seq(
+    "org.apache.spark" %% "spark-core" % sparkVersion % "provided",
+    "org.apache.spark" %% "spark-hive" % sparkVersion % "provided",
+    "org.apache.spark" %% "spark-sql" % sparkVersion % "provided",
+    "org.apache.spark" %% "spark-streaming" % sparkVersion % "provided",
+    "org.apache.spark" %% "spark-mllib" % sparkVersion % "provided",
+    "org.apache.spark" %% "spark-graphx" % sparkVersion % "provided",
+    "org.apache.spark" %% "spark-streaming-kafka" % sparkVersion
+    // "com.datastax.spark" %% "spark-cassandra-connector" % "1.6.0-M1"
+    //"com.websudos" %% "phantom-dsl_2.10" % "1.22.0"
+  )
+}
 
 assemblySettings
 
