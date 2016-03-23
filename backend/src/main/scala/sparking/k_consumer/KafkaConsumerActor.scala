@@ -5,14 +5,12 @@ package sparking.k_consumer
 
 import akka.actor.{Actor, ActorLogging, Props}
 import kafka.consumer.{ConsumerIterator, ConsumerTimeoutException, KafkaStream}
-import kafka.serializer.StringDecoder
+
 
 object KafkaConsumerActor {
 
   def props(topic: String, consumer: String => Unit) =
     Props(classOf[KafkaConsumerActor], topic, consumer)
-
-  private val decoder = new StringDecoder()
 
   private object Continue
 
@@ -24,9 +22,9 @@ class KafkaConsumerActor(topic: String, consumer: String => Unit) extends Actor 
 
   private lazy val connection = KafkaConnection.consumer()
 
-  private lazy val it: ConsumerIterator[String, String] = {
+  private lazy val it: ConsumerIterator[Array[Byte], Array[Byte]] = {
     val topicMap = Map(topic -> 1)
-    val kafkaStream: KafkaStream[String, String] = connection.createMessageStreams(topicMap, decoder, decoder)(topic)(0)
+    val kafkaStream = connection.createMessageStreams(topicMap)(topic)(0)
     kafkaStream.iterator()
   }
 
@@ -42,9 +40,10 @@ class KafkaConsumerActor(topic: String, consumer: String => Unit) extends Actor 
     case Continue if hasNextInTime =>
       log.debug("kafka-consumer-actor continue")
       val msg = it.next()
-      consumer(msg.message())
+      val text = new String(msg.message(), "UTF8")
+      consumer(text)
       connection.commitOffsets
-      log.debug(s"kafka-consumer-actor message = ${msg}")
+      log.debug(s"kafka-consumer-actor message = ${text}")
       self ! Continue
 
     case Continue =>
