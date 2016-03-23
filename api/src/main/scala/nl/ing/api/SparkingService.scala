@@ -42,26 +42,32 @@ trait SparkingService extends HttpService {
       )
     )
   )
+  def sendToKafka(msg: String): Unit  =  {
+    val kafkaActor = actorRefFactory.actorOf(KafkaProducerActor.props("test"))
+    kafkaActor ! msg
+  }
+
+    def locationToKafka(userId: String,location: Option[String]) = location match {
+      case Some(s) => sendToKafka(s"user=$userId,location=$s")
+      case None => println("Error problem for locations to kafka")
+    }
 
   def processFeedback(userId: String,  cat: Option[String], score: Option[String], location: Option[String]): String = {
     println(s"Processing feedback $userId  cat: $cat , score $score" )
     val scoreDouble = score.get.toDouble
     val catString = cat.get
-    val locationString = location.getOrElse("NL")
 
-    val kafkaActor = actorRefFactory.actorOf(KafkaProducerActor.props("test"))
     val msg = (s"user=$userId,category=$catString,score=$scoreDouble")
-    kafkaActor ! msg
-
-    val locMessage = (s"user=$userId,location=$locationString")
-    kafkaActor ! locMessage
+    sendToKafka(msg)
 
     Thread.sleep(500)
 
-    getOffersFromDb(userId)
+    getOffersFromDb(userId,location)
   }
 
-  def getOffersFromDb(userId: String): String =  {
+  def getOffersFromDb(userId: String,  location: Option[String]): String =  {
+
+    locationToKafka(userId,location)
 //    val uri = CassandraConnectionUri("cassandra://172.16.33.16:9042")
     val uri = CassandraConnectionUri("cassandra://localhost:9042")
     println("uri set")
@@ -124,21 +130,23 @@ trait SparkingService extends HttpService {
       }
     } ~
   path("getOffers" / Segment) { input => //The pathvariable will be /getOffers/{pathVariable}
-    get{
-      respondWithHeader(RawHeader("Access-Control-Allow-Origin","*")){
+    get {
+      respondWithHeader(RawHeader("Access-Control-Allow-Origin", "*")) {
         respondWithMediaType(`text/plain`) {
-          complete{
-            getOffersFromDb(input)
+          parameters('location.?) { (location) =>
+            complete {
+              getOffersFromDb(input, location)
+            }
           }
         }
+        }
       }
-    }
-  } ~
-      path("feedback" / Segment) { input => //The pathvariable will be /feedback/{pathVariable}?cat=test&score=0.42
+    } ~
+      path("feedback" / Segment) { input => //The pathvariable will be /feedback/{pathVariable}?cat=test&score=0.42&location=US
         get {
           respondWithHeader(RawHeader("Access-Control-Allow-Origin", "*")) {
             respondWithMediaType(`text/plain`) {
-              parameters('cat.?, 'score.?, 'location.?) { (cat, score, location ) =>
+              parameters('cat.?, 'score.?, 'location.?) { (cat, score, location) =>
                 complete {
                   processFeedback(input, cat, score, location)
                 }
