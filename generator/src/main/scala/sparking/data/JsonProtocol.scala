@@ -7,6 +7,6 @@ import spray.json.DefaultJsonProtocol
 
 object JsonProtocol extends DefaultJsonProtocol {
 
-  implicit val CustomerDataJsonFormat = jsonFormat2(CustomerData)
+  implicit val CustomerDataJsonFormat = jsonFormat4(Transaction)
 
 }
