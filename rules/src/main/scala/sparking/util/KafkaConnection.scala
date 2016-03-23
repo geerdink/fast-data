@@ -26,6 +26,12 @@ private class ConfigProperties(config: Config) extends Properties() {
 
 }
 
+object KafkaConnection extends KafkaConnection("kafka") {
+
+  def apply(path: String) = new KafkaConnection(path)
+
+}
+
 class KafkaConnection(path: String) {
 
   private val config = ConfigFactory.load.getConfig(path)
@@ -45,8 +51,3 @@ class KafkaConnection(path: String) {
 
 }
 
-object KafkaConnection extends KafkaConnection("kafka") {
-
-  def apply(path: String) = new KafkaConnection(path)
-
-}
