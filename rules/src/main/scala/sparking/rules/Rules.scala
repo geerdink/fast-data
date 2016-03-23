@@ -27,7 +27,11 @@ object Rules {
   }
 
   def convertDefineCategory(transaction: String): String = {
-    defineCategory(parse(transaction)).text
+    try {
+      defineCategory(parse(transaction)).text
+    } catch {
+      case e => ""
+    }
   }
 
   def median(values: List[Int]): Int = {
