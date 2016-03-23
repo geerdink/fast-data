@@ -1,0 +1,22 @@
+CREATE TABLE sparking.offers(
+  offer_id int,
+  user_id varchar,
+  offer_name varchar,
+  score double,
+  PRIMARY KEY (offer_id,user_id)
+  );
+
+INSERT INTO sparking.offers(offer_id,user_id,offer_name,score) VALUES (1,'Henk','Beleggen',0.32);
+INSERT INTO sparking.offers(offer_id,user_id,offer_name,score) VALUES (2,'Griet','Beleggen',0.52);
+INSERT INTO sparking.offers(offer_id,user_id,offer_name,score) VALUES (3,'Henk','Lenen',0.32);
+INSERT INTO sparking.offers(offer_id,user_id,offer_name,score) VALUES (4,'Betty','Sparen',0.92);
+INSERT INTO sparking.offers(offer_id,user_id,offer_name,score) VALUES (5,'Griet','Beleggen',0.32);
+INSERT INTO sparking.offers(offer_id,user_id,offer_name,score) VALUES (6,'Betty','Beleggen',0.12);
+INSERT INTO sparking.offers(offer_id,user_id,offer_name,score) VALUES (7,'Henk','Sparen',0.32);
+INSERT INTO sparking.offers(offer_id,user_id,offer_name,score) VALUES (8,'Griet','Lenen',0.52);
+INSERT INTO sparking.offers(offer_id,user_id,offer_name,score) VALUES (9,'Betty','Lenen',0.22);
+INSERT INTO sparking.offers(offer_id,user_id,offer_name,score) VALUES (10,'Henk','Beleggen',0.22);
+INSERT INTO sparking.offers(offer_id,user_id,offer_name,score) VALUES (11,'Henk','Sparen',0.62);
+INSERT INTO sparking.offers(offer_id,user_id,offer_name,score) VALUES (12,'Griet','Beleggen',0.42);
+INSERT INTO sparking.offers(offer_id,user_id,offer_name,score) VALUES (13,'Henk','Beleggen',0.12);
+

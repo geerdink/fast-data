@@ -5,18 +5,11 @@ lazy val commonSettings = Seq(
   scalaVersion := "2.11.7"
 )
 
-lazy val generator = (project in file(".")).
+lazy val util = (project in file(".")).
   settings(commonSettings: _*).
   settings(
-    name := "sparking.generator",
+    name := "sparking.util",
     crossPaths := false,
-    assemblyMergeStrategy in assembly := {
-      case PathList("META-INF", "io.netty.versions.properties") => MergeStrategy.first
-      case PathList("org", "slf4j", "impl", xs @ _*) => MergeStrategy.first
-      case x =>
-        val oldStrategy = (assemblyMergeStrategy in assembly).value
-        oldStrategy(x)
-    },
     libraryDependencies ++= {
       val akkaVersion = "2.3.9"
       val sprayVersion = "1.3.3"

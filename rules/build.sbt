@@ -5,10 +5,10 @@ lazy val commonSettings = Seq(
   scalaVersion := "2.11.7"
 )
 
-lazy val generator = (project in file(".")).
+lazy val rules = (project in file(".")).
   settings(commonSettings: _*).
   settings(
-    name := "sparking.generator",
+    name := "sparking.rules",
     crossPaths := false,
     assemblyMergeStrategy in assembly := {
       case PathList("META-INF", "io.netty.versions.properties") => MergeStrategy.first
@@ -23,7 +23,6 @@ lazy val generator = (project in file(".")).
       val kafkaVersion = "0.9.0.1"
       Seq(
         "org.apache.kafka" %% "kafka" % kafkaVersion,
-        "com.datastax.cassandra" % "cassandra-driver-core" % "3.0.0",
         "com.typesafe.akka" %% "akka-actor" % akkaVersion,
         "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
         "com.typesafe.akka" %% "akka-testkit" % akkaVersion % "test",
@@ -33,7 +32,9 @@ lazy val generator = (project in file(".")).
         "io.spray" %% "spray-json" % "1.3.2",
         "org.scalatest" %% "scalatest" % "2.2.6" % "test",
         "ch.qos.logback" % "logback-classic" % "1.1.6",
-        "ch.qos.logback" % "logback-core" % "1.1.6"
+        "ch.qos.logback" % "logback-core" % "1.1.6",
+        "com.datastax.cassandra" % "cassandra-driver-core" % "3.0.0",
+        "org.scalatest" %% "scalatest" % "3.0.0-M15"
       )
     }
   )
