@@ -1,9 +1,9 @@
 package nl.ing.api
 
 import akka.actor.Actor
-import java.net.URI
 
 import com.datastax.driver.core.{Row, Cluster, QueryOptions, ConsistencyLevel}
+import sparking.util.{KafkaProducerActor, KafkaProducer}
 import spray.http.HttpHeaders.RawHeader
 import spray.routing._
 import spray.http._
@@ -12,10 +12,9 @@ import MediaTypes._
 import org.json4s._
 import org.json4s.native.Serialization
 import org.json4s.native.Serialization.{ writePretty }
-import scala.collection.mutable.Map
 
 
-case class Offer(id: Long, name: String, score: Double)
+case class Offer(name: String, score: Double)
 case class OfferList(offers: List[Offer])
 
 
@@ -30,11 +29,11 @@ class APIService extends Actor with SparkingService {
   // or timeout handling
   def receive = runRoute(apiRoute)
 
-
 }
 
 // this trait defines our service behavior independently from the service actor
 trait SparkingService extends HttpService {
+
 
   implicit val formats = Serialization.formats(
     ShortTypeHints(
@@ -49,10 +48,16 @@ trait SparkingService extends HttpService {
     val scoreDouble = score.get.toDouble
     val catString = cat.get
 
-    println(s"Processing feedback $userId  cat: $catString , score:$scoreDouble" )
+    val kafkaActor = actorRefFactory.actorOf(KafkaProducerActor.props("test"))
 
+    //println(s"Processing feedback $userId  cat: $catString , score:$scoreDouble" )
+    val msg = (s"user=$userId,category=$catString,score=$scoreDouble")
 
-    getOffers(userId)
+    kafkaActor ! msg
+
+    Thread.sleep(500)
+
+    getOffersFromDb(userId)
   }
 
   def getOffersFromDb(userId: String): String =  {
@@ -61,7 +66,7 @@ trait SparkingService extends HttpService {
     println("uri set")
     val session = DatabaseHelper.createSessionAndInitKeyspace(uri)
     println("session set")
-    val result = session.execute("SELECT * FROM sparking.offers WHERE user_id='"+userId+"' ALLOW FILTERING;")
+    val result = session.execute("SELECT * FROM sparking.offers WHERE user_name='"+userId+"' ALLOW FILTERING;")
     println("query done")
     val resultList = result.all()
 
@@ -72,10 +77,9 @@ trait SparkingService extends HttpService {
       // for loop execution with a range
       for (a <- 0 until lengthResults - 1) {
         println(resultList.get(a))
-        var offer_id = resultList.get(a).getInt(0)
-        var offer_name = resultList.get(a).getString(2)
-        val score = resultList.get(a).getDouble(3)
-        offers = Offer(offer_id, offer_name, score) :: offers
+        var offer_name = resultList.get(a).getString(1)
+        val score = resultList.get(a).getDouble(2)
+        offers = Offer(offer_name, score) :: offers
       }
       println(offers)
       offers
@@ -85,9 +89,9 @@ trait SparkingService extends HttpService {
 
   }
   def getOffers(userId: String): String =  {
-    val belegOffer = Offer(1, "Beleggen", 0.42)
-    val spaarOffer = Offer(2, "Sparen", 0.52)
-    val leenOffer = Offer(3, "Lenen", 0.32)
+    val belegOffer = Offer("Beleggen", 0.42)
+    val spaarOffer = Offer("Sparen", 0.52)
+    val leenOffer = Offer("Lenen", 0.32)
     val offerList = List(belegOffer, leenOffer, spaarOffer)
 
     writePretty(offerList)
@@ -129,7 +133,7 @@ trait SparkingService extends HttpService {
       }
     }
   } ~
-      path("feedback" / Segment) { input => //The pathvariable will be /feedback/{pathVariable}
+      path("feedback" / Segment) { input => //The pathvariable will be /feedback/{pathVariable}?cat=test&score=0.42
         get {
           respondWithHeader(RawHeader("Access-Control-Allow-Origin", "*")) {
             respondWithMediaType(`text/plain`) {

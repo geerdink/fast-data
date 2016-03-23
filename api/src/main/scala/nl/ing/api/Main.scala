@@ -6,11 +6,14 @@ import spray.can.Http
 import akka.pattern.ask
 import akka.util.Timeout
 import scala.concurrent.duration._
+import akka.actor.ActorSystem
+
 
 object Main extends App {
 
   // we need an ActorSystem to host our application in
   implicit val system = ActorSystem("sparkingAPI")
+
 
   // create and start our service actor
   val service = system.actorOf(Props[APIService], "sparking-api-service")

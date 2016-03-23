@@ -37,7 +37,8 @@ class CassandraWriterActor(topic: String) extends Actor with ActorLogging {
         val msg = it.next()
         val input = new String(msg.message(), "UTF8")
 
-        CassandraHelper.updateOfferInDb(createOfferingUpdate(input))
+        log.info("createOfferingUpdate, input = " + input)
+        CassandraHelper.updateOfferInDb(CassandraHelper.createOfferingUpdate(input))
         println(s">>> input=${input}")
         connection.commitOffsets
         log.debug(s"cassandra-writer-actor message = ${input}")
@@ -45,8 +46,8 @@ class CassandraWriterActor(topic: String) extends Actor with ActorLogging {
       }
       catch {
         case e: Exception => {
-          log.error("cassandra-writer-actor received an invalid message!")
-
+          log.error("cassandra-writer-actor received an invalid message! Error = " + e.getMessage)
+          self ! Continue
           //throw e
         }
       }
@@ -55,11 +56,5 @@ class CassandraWriterActor(topic: String) extends Actor with ActorLogging {
       log.debug("cassandra-writer-actor continue without message")
       self ! Continue
     }
-  }
-
-  def createOfferingUpdate(input: String): OfferingUpdate = {
-    //userId=1,offering=Beleggen,scoreDelta=2.5
-    val parts = input.split('c')
-    new OfferingUpdate(parts(0).split('=')(1), parts(1).split('=')(1), Double.unbox(parts(2).split('=')(1)))
   }
 }
