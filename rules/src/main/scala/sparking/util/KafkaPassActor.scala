@@ -12,7 +12,6 @@ object KafkaPassActor {
     Props(classOf[KafkaPassActor], source, target, engine)
 
   private object Continue
-
 }
 
 class KafkaPassActor(source: String, target: String, rule: String => String) extends Actor with ActorLogging {

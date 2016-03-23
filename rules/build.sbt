@@ -32,7 +32,8 @@ lazy val rules = (project in file(".")).
         "io.spray" %% "spray-json" % "1.3.2",
         "org.scalatest" %% "scalatest" % "2.2.6" % "test",
         "ch.qos.logback" % "logback-classic" % "1.1.6",
-        "ch.qos.logback" % "logback-core" % "1.1.6"
+        "ch.qos.logback" % "logback-core" % "1.1.6",
+        "com.datastax.cassandra" % "cassandra-driver-core" % "3.0.0"
       )
     }
   )
