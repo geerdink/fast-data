@@ -5,4 +5,5 @@ package sparking.data
   */
 trait CustomerEvent {
   val user: String
+  def text:String
 }
