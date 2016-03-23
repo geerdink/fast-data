@@ -32,17 +32,16 @@ libraryDependencies ++= Seq(
   "org.apache.spark" %% "spark-hive" % "1.6.0" % "provided",
   "org.apache.spark" %% "spark-sql" % "1.6.0" % "provided",
   "org.apache.spark" %% "spark-streaming" % "1.6.0" % "provided",
-  "org.apache.spark" %% "spark-streaming-kafka" % "1.6.0",
   "org.apache.spark" %% "spark-mllib" % "1.6.0" % "provided",
   "org.apache.spark" %% "spark-graphx" % "1.6.0" % "provided",
-  "com.datastax.spark" %% "spark-cassandra-connector" % "1.6.0-M1"
+  "org.apache.spark" %% "spark-streaming-kafka" % "1.6.0"
+ // "com.datastax.spark" %% "spark-cassandra-connector" % "1.6.0-M1"
   //"com.websudos" %% "phantom-dsl_2.10" % "1.22.0"
 )
 
-//assemblySettings
+assemblySettings
 
-//assemblyJarName in assembly := "sparking.jar"
-//
+jarName in assembly := "sparking.jar"
 
 mergeStrategy in assembly := {
   case m if m.toLowerCase.endsWith("manifest.mf")          => MergeStrategy.discard
