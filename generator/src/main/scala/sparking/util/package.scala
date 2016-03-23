@@ -1,11 +1,11 @@
 /**
   * Ger van Rossum (2016).
   */
-package gni.kraps.generator
+package sparking
 
 import kafka.message.MessageAndMetadata
 
-package object kafka_util {
+package object util {
 
   type KafkaKeyValue = MessageAndMetadata[String, String]
 

@@ -1,6 +1,6 @@
 
 lazy val commonSettings = Seq(
-  organization := "gni.kraps",
+  organization := "sparking",
   version := "0.1-SNAPSHOT",
   scalaVersion := "2.11.7"
 )
@@ -8,7 +8,7 @@ lazy val commonSettings = Seq(
 lazy val generator = (project in file(".")).
   settings(commonSettings: _*).
   settings(
-    name := "gni.kraps.generator",
+    name := "sparking.generator",
     crossPaths := false,
     assemblyMergeStrategy in assembly := {
       case PathList("META-INF", "io.netty.versions.properties") => MergeStrategy.first

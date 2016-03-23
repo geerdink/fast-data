@@ -1,7 +1,7 @@
 /**
   * Ger van Rossum (2016).
   */
-package gni.kraps.generator.kafka_util
+package sparking.util
 
 import java.util.Properties
 
