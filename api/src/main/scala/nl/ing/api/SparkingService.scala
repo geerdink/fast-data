@@ -14,12 +14,9 @@ import org.json4s.native.Serialization
 import org.json4s.native.Serialization.{ writePretty }
 import scala.collection.mutable.Map
 
-//import org.apache.spark.sql._
-
 
 case class Offer(id: Long, name: String, score: Double)
 case class OfferList(offers: List[Offer])
-
 
 
 class APIService extends Actor with SparkingService {
@@ -45,46 +42,6 @@ trait SparkingService extends HttpService {
       )
     )
   )
-
-
-
-  //taken from: http://manuel.kiessling.net/2015/01/19/setting-up-a-scala-sbt-multi-project-with-cassandra-connectivity-and-migrations/
-  object DatabaseHelper {
-
-    def createSessionAndInitKeyspace(uri: CassandraConnectionUri,
-                                     defaultConsistencyLevel: ConsistencyLevel = QueryOptions.DEFAULT_CONSISTENCY_LEVEL) = {
-      val cluster = new Cluster.Builder().
-        addContactPoints(uri.hosts.toArray: _*).
-        withPort(uri.port).
-        withQueryOptions(new QueryOptions().setConsistencyLevel(defaultConsistencyLevel)).build
-
-      val session = cluster.connect
-      session.execute(s"USE ${uri.keyspace}")
-      session
-    }
-  }
-
-  case class CassandraConnectionUri(connectionString: String) {
-    private val uri = new URI(connectionString)
-
-    private val additionalHosts = Option(uri.getQuery) match {
-      case Some(query) => query.split('&').map(_.split('=')).filter(param => param(0) == "host").map(param => param(1)).toSeq
-      case None => Seq.empty
-    }
-
-    val host = uri.getHost
-    val hosts = Seq(uri.getHost) ++ additionalHosts
-    val port = uri.getPort
-    val keyspace = "sparking"
-  }
-
-  def buildOffer(r: Row): Offer = {
-    val offer_id = r.getInt("offer_id")
-    val offer_name = r.getString("offer_name")
-    val score = r.getInt("score")
-    Offer(offer_id, offer_name, score)
-  }
-
 
   def getOffersFromDb(userId: String): String =  {
 
