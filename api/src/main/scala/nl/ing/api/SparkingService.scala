@@ -1,7 +1,6 @@
 package nl.ing.api
 
 import akka.actor.Actor
-import java.net.URI
 
 import com.datastax.driver.core.{Row, Cluster, QueryOptions, ConsistencyLevel}
 import sparking.util.{KafkaProducerActor, KafkaProducer}
@@ -35,7 +34,6 @@ class APIService extends Actor with SparkingService {
 // this trait defines our service behavior independently from the service actor
 trait SparkingService extends HttpService {
 
-  val kafkaActor = actorRefFactory.actorOf(KafkaProducerActor.props("test"))
 
   implicit val formats = Serialization.formats(
     ShortTypeHints(
@@ -50,12 +48,14 @@ trait SparkingService extends HttpService {
     val scoreDouble = score.get.toDouble
     val catString = cat.get
 
+    val kafkaActor = actorRefFactory.actorOf(KafkaProducerActor.props("test"))
+
     //println(s"Processing feedback $userId  cat: $catString , score:$scoreDouble" )
-    val msg = (s"username=$userId,category=$cat,score=$scoreDouble")
+    val msg = (s"user=$userId,category=$catString,score=$scoreDouble")
 
     kafkaActor ! msg
 
-    Thread.sleep(1000)
+    Thread.sleep(500)
 
     getOffersFromDb(userId)
   }

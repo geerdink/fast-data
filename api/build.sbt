@@ -2,7 +2,7 @@
 
 lazy val commonSettings = Seq(
   organization := "gni.kraps",
-  version := "0.4-SNAPSHOT",
+  version := "0.6-SNAPSHOT",
   scalaVersion := "2.11.7"
 )
 
