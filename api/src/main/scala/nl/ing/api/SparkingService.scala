@@ -14,12 +14,9 @@ import org.json4s.native.Serialization
 import org.json4s.native.Serialization.{ writePretty }
 import scala.collection.mutable.Map
 
-//import org.apache.spark.sql._
-
 
 case class Offer(id: Long, name: String, score: Double)
 case class OfferList(offers: List[Offer])
-
 
 
 class APIService extends Actor with SparkingService {
@@ -32,6 +29,7 @@ class APIService extends Actor with SparkingService {
   // other things here, like request stream processing
   // or timeout handling
   def receive = runRoute(apiRoute)
+
 
 }
 
@@ -46,48 +44,18 @@ trait SparkingService extends HttpService {
     )
   )
 
+  def processFeedback(userId: String,  cat: Option[String], score: Option[String]): String = {
+    println(s"Processing feedback $userId  cat: $cat , score $score" )
+    val scoreDouble = score.get.toDouble
+    val catString = cat.get
+
+    println(s"Processing feedback $userId  cat: $catString , score:$scoreDouble" )
 
 
-  //taken from: http://manuel.kiessling.net/2015/01/19/setting-up-a-scala-sbt-multi-project-with-cassandra-connectivity-and-migrations/
-  object DatabaseHelper {
-
-    def createSessionAndInitKeyspace(uri: CassandraConnectionUri,
-                                     defaultConsistencyLevel: ConsistencyLevel = QueryOptions.DEFAULT_CONSISTENCY_LEVEL) = {
-      val cluster = new Cluster.Builder().
-        addContactPoints(uri.hosts.toArray: _*).
-        withPort(uri.port).
-        withQueryOptions(new QueryOptions().setConsistencyLevel(defaultConsistencyLevel)).build
-
-      val session = cluster.connect
-      session.execute(s"USE ${uri.keyspace}")
-      session
-    }
+    getOffers(userId)
   }
-
-  case class CassandraConnectionUri(connectionString: String) {
-    private val uri = new URI(connectionString)
-
-    private val additionalHosts = Option(uri.getQuery) match {
-      case Some(query) => query.split('&').map(_.split('=')).filter(param => param(0) == "host").map(param => param(1)).toSeq
-      case None => Seq.empty
-    }
-
-    val host = uri.getHost
-    val hosts = Seq(uri.getHost) ++ additionalHosts
-    val port = uri.getPort
-    val keyspace = "sparking"
-  }
-
-  def buildOffer(r: Row): Offer = {
-    val offer_id = r.getInt("offer_id")
-    val offer_name = r.getString("offer_name")
-    val score = r.getInt("score")
-    Offer(offer_id, offer_name, score)
-  }
-
 
   def getOffersFromDb(userId: String): String =  {
-
 //    val uri = CassandraConnectionUri("cassandra://172.16.33.16:9042")
     val uri = CassandraConnectionUri("cassandra://localhost:9042")
     println("uri set")
@@ -97,7 +65,6 @@ trait SparkingService extends HttpService {
     println("query done")
     val resultList = result.all()
 
-//    val resultList = result.all()
     val lengthResults = resultList.size()
     val offerList: List[Offer] = {
       var offers: List[Offer] = Nil
@@ -151,7 +118,7 @@ trait SparkingService extends HttpService {
         }
       }
     } ~
-  path("getOffers" / Segment) { input => //The pathvariable will be /hello/{pathVariable}
+  path("getOffers" / Segment) { input => //The pathvariable will be /getOffers/{pathVariable}
     get{
       respondWithHeader(RawHeader("Access-Control-Allow-Origin","*")){
         respondWithMediaType(`text/plain`) {
@@ -161,5 +128,18 @@ trait SparkingService extends HttpService {
         }
       }
     }
-  }
+  } ~
+      path("feedback" / Segment) { input => //The pathvariable will be /feedback/{pathVariable}
+        get {
+          respondWithHeader(RawHeader("Access-Control-Allow-Origin", "*")) {
+            respondWithMediaType(`text/plain`) {
+              parameters('cat.?, 'score.?) { (cat, score) =>
+                complete {
+                  processFeedback(input, cat, score)
+                }
+              }
+            }
+          }
+        }
+      }
 }
