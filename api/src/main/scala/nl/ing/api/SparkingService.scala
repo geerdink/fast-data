@@ -94,14 +94,9 @@ trait SparkingService extends HttpService {
     val session = DatabaseHelper.createSessionAndInitKeyspace(uri)
     println("session set")
     val result = session.execute("SELECT * FROM sparking.offers WHERE user_id='"+userId+"' ALLOW FILTERING;")
-//    val res: List[Array[String]] = res
     println("query done")
     val resultList = result.all()
 
-//    var allValues = {
-//      while(result.isExhausted())
-//        result.all()
-//    }
 //    val resultList = result.all()
     val lengthResults = resultList.size()
     val offerList: List[Offer] = {
@@ -114,7 +109,6 @@ trait SparkingService extends HttpService {
         var offer_name = resultList.get(a).getString(2)
         val score = resultList.get(a).getDouble(3)
         offers = Offer(offer_id, offer_name, score) :: offers
-//        offers = buildOffer(resultList.get(a)) :: offers;
       }
       println(offers)
       offers
@@ -129,10 +123,6 @@ trait SparkingService extends HttpService {
     val leenOffer = Offer(3, "Lenen", 0.32)
     val offerList = List(belegOffer, leenOffer, spaarOffer)
 
-
-    /*val json =
-      ("offers" ->
-        ("user-id" -> "Piet"))*/
     writePretty(offerList)
   }
 
