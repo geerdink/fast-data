@@ -44,7 +44,7 @@ object CassandraHelper {
     println("uri and session set")
 
     val row = session.execute("SELECT score FROM sparking.offers WHERE user_name='" + offeringUpdate.userId + "' AND offer_name='" + offeringUpdate.offering + "';")
-    val score = row.one.getDouble(0)
+    val score = if (row.one() == null) 0 else row.one.getDouble(0)
     println("current score: " + score)
 
     val newScore = offeringUpdate.scoreDelta + score
