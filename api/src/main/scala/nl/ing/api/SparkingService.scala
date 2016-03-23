@@ -30,6 +30,7 @@ class APIService extends Actor with SparkingService {
   // or timeout handling
   def receive = runRoute(apiRoute)
 
+
 }
 
 // this trait defines our service behavior independently from the service actor
@@ -43,8 +44,18 @@ trait SparkingService extends HttpService {
     )
   )
 
-  def getOffersFromDb(userId: String): String =  {
+  def processFeedback(userId: String,  cat: Option[String], score: Option[String]): String = {
+    println(s"Processing feedback $userId  cat: $cat , score $score" )
+    val scoreDouble = score.get.toDouble
+    val catString = cat.get
 
+    println(s"Processing feedback $userId  cat: $catString , score:$scoreDouble" )
+
+
+    getOffers(userId)
+  }
+
+  def getOffersFromDb(userId: String): String =  {
 //    val uri = CassandraConnectionUri("cassandra://172.16.33.16:9042")
     val uri = CassandraConnectionUri("cassandra://localhost:9042")
     println("uri set")
@@ -54,7 +65,6 @@ trait SparkingService extends HttpService {
     println("query done")
     val resultList = result.all()
 
-//    val resultList = result.all()
     val lengthResults = resultList.size()
     val offerList: List[Offer] = {
       var offers: List[Offer] = Nil
@@ -108,7 +118,7 @@ trait SparkingService extends HttpService {
         }
       }
     } ~
-  path("getOffers" / Segment) { input => //The pathvariable will be /hello/{pathVariable}
+  path("getOffers" / Segment) { input => //The pathvariable will be /getOffers/{pathVariable}
     get{
       respondWithHeader(RawHeader("Access-Control-Allow-Origin","*")){
         respondWithMediaType(`text/plain`) {
@@ -118,5 +128,18 @@ trait SparkingService extends HttpService {
         }
       }
     }
-  }
+  } ~
+      path("feedback" / Segment) { input => //The pathvariable will be /feedback/{pathVariable}
+        get {
+          respondWithHeader(RawHeader("Access-Control-Allow-Origin", "*")) {
+            respondWithMediaType(`text/plain`) {
+              parameters('cat.?, 'score.?) { (cat, score) =>
+                complete {
+                  processFeedback(input, cat, score)
+                }
+              }
+            }
+          }
+        }
+      }
 }
