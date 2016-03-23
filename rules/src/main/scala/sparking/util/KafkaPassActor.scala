@@ -15,7 +15,7 @@ object KafkaPassActor {
 
 }
 
-class KafkaPassActor(source: String, target: String, engine: String => String) extends Actor with ActorLogging {
+class KafkaPassActor(source: String, target: String, rule: String => String) extends Actor with ActorLogging {
 
   import KafkaPassActor._
 
@@ -42,7 +42,7 @@ class KafkaPassActor(source: String, target: String, engine: String => String) e
       log.debug("kafka-consumer-actor continue")
       val msg = it.next()
       val input = new String(msg.message(), "UTF8")
-      val output = engine(input)
+      val output = rule(input)
       println(s">>> input=${input} output=${output}")
       producer.send(output)
       connection.commitOffsets
