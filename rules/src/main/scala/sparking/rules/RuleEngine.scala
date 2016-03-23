@@ -8,11 +8,8 @@ import sparking.results.Category
 
 object RuleEngine {
 
-  def defineCategory(transaction: Transaction): Category = {
-    val balance = transaction.balance - transaction.amount
-    val score = transaction.balance.abs - balance.abs
-    if (balance <= 0.0) Category(transaction.user, "Loan", - score)
-    else Category(transaction.user, "Saving", score)
+  def processTransaction(transaction: String):String ={
+    Rules.convertDefineCategory(transaction)
   }
 
   def process(message: String): String = {
