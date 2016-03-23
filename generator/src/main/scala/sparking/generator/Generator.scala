@@ -20,7 +20,7 @@ object Generator extends App {
 
   val producer = KafkaProducer("test")
 
-  val randomUser = new RandomSelection("Alice", "Bob", "Zelda")
+  val randomUser = new RandomSelection("Alice", "Bob", "Zelda", "Betty", "Henk", "Griet")
 
   val randomAmount = new RandomDouble(-30.0, 80.0)
 
