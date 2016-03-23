@@ -43,17 +43,18 @@ trait SparkingService extends HttpService {
     )
   )
 
-  def processFeedback(userId: String,  cat: Option[String], score: Option[String]): String = {
+  def processFeedback(userId: String,  cat: Option[String], score: Option[String], location: Option[String]): String = {
     println(s"Processing feedback $userId  cat: $cat , score $score" )
     val scoreDouble = score.get.toDouble
     val catString = cat.get
+    val locationString = location.getOrElse("NL")
 
     val kafkaActor = actorRefFactory.actorOf(KafkaProducerActor.props("test"))
-
-    //println(s"Processing feedback $userId  cat: $catString , score:$scoreDouble" )
     val msg = (s"user=$userId,category=$catString,score=$scoreDouble")
-
     kafkaActor ! msg
+
+    val locMessage = (s"user=$userId,location=$locationString")
+    kafkaActor ! locMessage
 
     Thread.sleep(500)
 
@@ -75,7 +76,7 @@ trait SparkingService extends HttpService {
       var offers: List[Offer] = Nil
       var a = 0
       // for loop execution with a range
-      for (a <- 0 until lengthResults - 1) {
+      for (a <- 0 until lengthResults) {
         println(resultList.get(a))
         var offer_name = resultList.get(a).getString(1)
         val score = resultList.get(a).getDouble(2)
@@ -137,9 +138,9 @@ trait SparkingService extends HttpService {
         get {
           respondWithHeader(RawHeader("Access-Control-Allow-Origin", "*")) {
             respondWithMediaType(`text/plain`) {
-              parameters('cat.?, 'score.?) { (cat, score) =>
+              parameters('cat.?, 'score.?, 'location.?) { (cat, score, location ) =>
                 complete {
-                  processFeedback(input, cat, score)
+                  processFeedback(input, cat, score, location)
                 }
               }
             }
