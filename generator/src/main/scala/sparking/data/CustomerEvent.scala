@@ -3,4 +3,8 @@
   */
 package sparking.data
 
-case class CustomerData(relnr: String, text: String)
+trait CustomerEvent {
+
+  val user: String
+
+}
