@@ -43,6 +43,7 @@ class KafkaPassActor(source: String, target: String, engine: String => String) e
       val msg = it.next()
       val input = new String(msg.message(), "UTF8")
       val output = engine(input)
+      println(s">>> input=${input} output=${output}")
       producer.send(output)
       connection.commitOffsets
       log.debug(s"kafka-consumer-actor message = ${input}")
