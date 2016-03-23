@@ -13,7 +13,7 @@ object KafkaProducerActor {
 
 class KafkaProducerActor(topic: String) extends Actor {
 
-  val producer = MessageProducer(topic)
+  val producer = KafkaProducer(topic)
 
   def receive = {
     case msg: String => producer.send(msg)

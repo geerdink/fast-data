@@ -5,7 +5,7 @@ package sparking.util
 
 import kafka.producer.KeyedMessage
 
-case class MessageProducer(topic: String) {
+case class KafkaProducer(topic: String) {
 
   private val producer = KafkaConnection.producer()
 

@@ -7,7 +7,7 @@ import java.util.Date
 import java.util.concurrent.TimeUnit
 
 import akka.actor.ActorSystem
-import sparking.util.MessageProducer
+import sparking.util.KafkaProducer
 
 import scala.concurrent.duration.Duration
 
@@ -17,7 +17,7 @@ object Generator extends App {
 
   val scheduler = actorSystem.scheduler
 
-  val producer = MessageProducer("test")
+  val producer = KafkaProducer("test")
 
   val task = new Runnable {
     def run() {
