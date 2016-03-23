@@ -1,7 +1,7 @@
 /**
   * Ger van Rossum (2016).
   */
-package gni.kraps.generator.kafka_util
+package sparking.util
 
 import java.util.Properties
 
@@ -13,6 +13,7 @@ import kafka.producer.{Producer, ProducerConfig}
   * Read properties from configuration and
   * - Make these accessible as Properties
   * - Allow properties to be overwritten
+  *
   * @param config configuration object
   */
 private class ConfigProperties(config: Config) extends Properties() {
@@ -22,6 +23,12 @@ private class ConfigProperties(config: Config) extends Properties() {
   override def getProperty(name: String): String =
     if (super.containsKey(name)) super.getProperty(name)
     else config.getString(name)
+
+}
+
+object KafkaConnection extends KafkaConnection("kafka") {
+
+  def apply(path: String) = new KafkaConnection(path)
 
 }
 
@@ -44,8 +51,3 @@ class KafkaConnection(path: String) {
 
 }
 
-object KafkaConnection extends KafkaConnection("kafka") {
-
-  def apply(path: String) = new KafkaConnection(path)
-
-}
