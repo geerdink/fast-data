@@ -14,9 +14,11 @@ object Demo extends App {
   val source = "test"
   val target = "sparking"
 
-  println(s">>> source topic = ${source}, target topic = ${target}")
+  println(s">>> KafkaPassActor: source topic = ${source}, target topic = ${target}")
 
   private val alert = system.actorOf(KafkaPassActor.props(source, target, Rules.passThrough))
+
+  println(s">>> CassandraWriter: source topic = sparking")
 
   private val update = system.actorOf(CassandraWriterActor.props("sparking"))
 
