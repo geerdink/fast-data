@@ -1,0 +1,37 @@
+<div class="tg print-hide-search">
+<aside class="full-cover h-bg-b l-mb-n4" role="complementary" aria-labelledby="we-help-title">
+    <!--<div>{{params.userId}}</div>-->
+    <div class="container">
+        <header class="full-cover-heading">
+            <h4 class="full-cover-title">Hello {{param.param}}</h4>
+            <h2 class="full-cover-title" id="we-help-title">Offers selected for you!</h2>
+        </header>
+
+        <div class="row">
+            <div class="col-xxs-12 col-sm-6 col-lg-6" ng-repeat="offer in offerList">
+                <div class="panel panel-shadow-a h-bg-a">
+                    <div class="panel-heading" style="float:right; padding:10px">
+                        <!--<p style="float:right"></p>-->
+                        <button class="btn btn-square btn-b" ng-click="offerList.splice($index,1)">
+                            &times
+                        </button>
+                    </div>
+                    <div class="panel-heading">
+                        <h3 class="panel-title panel-title-primary l-mb-05 ">{{offer.name}}</h3>
+                    </div>
+
+                    <div class="panel-body">
+                        <ul class="list-icons list-linklist">
+                            <li>
+                                <a target="_blank" href="#">{{offer.score}}</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</aside>
+</div>
