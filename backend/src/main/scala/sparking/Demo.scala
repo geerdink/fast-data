@@ -3,14 +3,14 @@ package sparking
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 import org.apache.spark.storage.StorageLevel
 import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.streaming.kafka.KafkaUtils
 
 object Demo {
   def main(args: Array[String]) {
-
-    import org.apache.spark.streaming.kafka._
-
+    
     val conf = new SparkConf().setAppName("SparkING").setMaster("local[2]")
-      .set("spark.cassandra.connection.host", "localhost")
+     // .set("spark.cassandra.connection.host", "localhost")
+
     val ssc = new StreamingContext(conf, Seconds(5))
     ssc.checkpoint("checkpoint")
 
