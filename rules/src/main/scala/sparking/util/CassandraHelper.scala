@@ -39,15 +39,18 @@ object CassandraHelper {
   }
 
   def updateOfferInDb(offeringUpdate: OfferingUpdate): Unit = {
-    //    val uri = CassandraConnectionUri("cassandra://172.16.33.16:9042")
     val uri = CassandraConnectionUri("cassandra://localhost:9042")
-    println("uri set")
     val session = Helper.createSessionAndInitKeyspace(uri)
-    println("session set")
+    println("uri and session set")
 
+    val row = session.execute("SELECT score FROM sparking.offers WHERE user_name='" + offeringUpdate.userId + "' AND offer_name='" + offeringUpdate.offering + "';")
+    val score = row.one.getDouble(0)
+    println("current score: " + score)
 
-    val result = session.execute("UPDATE sparking.offers SET score = score + " + offeringUpdate.scoreDelta + " WHERE user_name='" + offeringUpdate.userId + "' AND offer_name='" + offeringUpdate.offering + "';")
+    val newScore = offeringUpdate.scoreDelta + score
+    println("new score: " + newScore)
+
+    val result = session.execute("UPDATE sparking.offers SET score = " + newScore.toString + " WHERE user_name='" + offeringUpdate.userId + "' AND offer_name='" + offeringUpdate.offering + "';")
     println("query done")
   }
-
 }
