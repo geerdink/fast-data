@@ -6,27 +6,26 @@ package sparking.util
 import akka.actor.{Actor, ActorLogging, Props}
 import kafka.consumer.{ConsumerIterator, ConsumerTimeoutException}
 
-object KafkaPassActor {
+object KafkaConsumerActor {
 
-  def props(source: String, target: String, engine: String => String) =
-    Props(classOf[KafkaPassActor], source, target, engine)
+  def props(topic: String, consumer: String => Unit) =
+    Props(classOf[KafkaConsumerActor], topic, consumer)
 
   private object Continue
+
 }
 
-class KafkaPassActor(source: String, target: String, rule: String => String) extends Actor with ActorLogging {
+class KafkaConsumerActor(topic: String, consumer: String => Unit) extends Actor with ActorLogging {
 
-  import KafkaPassActor._
+  import KafkaConsumerActor._
 
   private lazy val connection = KafkaConnection.consumer()
 
   private lazy val it: ConsumerIterator[Array[Byte], Array[Byte]] = {
-    val topicMap = Map(source -> 1)
-    val kafkaStream = connection.createMessageStreams(topicMap)(source)(0)
+    val topicMap = Map(topic -> 1)
+    val kafkaStream = connection.createMessageStreams(topicMap)(topic)(0)
     kafkaStream.iterator()
   }
-
-  private lazy val producer = KafkaProducer(target)
 
   private def hasNextInTime = try {
     it.hasNext()
@@ -41,9 +40,8 @@ class KafkaPassActor(source: String, target: String, rule: String => String) ext
       log.debug("kafka-consumer-actor continue")
       val msg = it.next()
       val input = new String(msg.message(), "UTF8")
-      val output = rule(input)
-      println(s">>> input=${input} output=${output}")
-      producer.send(output)
+      val output = consumer(input)
+      println(s">>> input=${input}")
       connection.commitOffsets
       log.debug(s"kafka-consumer-actor message = ${input}")
       self ! Continue

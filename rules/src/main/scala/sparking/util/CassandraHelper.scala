@@ -4,6 +4,12 @@ import java.net.URI
 import com.datastax.driver.core.{Cluster, QueryOptions, ConsistencyLevel}
 
 object CassandraHelper {
+  def createOfferingUpdate(input: String): OfferingUpdate = {
+    //user=1,offer=Beleggen,scoreDelta=2.5
+    val parts = input.split(',')
+    new OfferingUpdate(parts(0).split('=')(1), parts(1).split('=')(1), parts(2).split('=')(1).toDouble)
+  }
+
   object Helper {
     def createSessionAndInitKeyspace(uri: CassandraConnectionUri,
                                      defaultConsistencyLevel: ConsistencyLevel = QueryOptions.DEFAULT_CONSISTENCY_LEVEL) = {
@@ -40,7 +46,7 @@ object CassandraHelper {
     println("session set")
 
 
-    val result = session.execute("UPDATE sparking.offers SET score = score + " + offeringUpdate.scoreDelta + " WHERE user_id='" + offeringUpdate.userId + "' AND offer_id='" + offeringUpdate.offering + "' ALLOW FILTERING;")
+    val result = session.execute("UPDATE sparking.offers SET score = score + " + offeringUpdate.scoreDelta + " WHERE user_name='" + offeringUpdate.userId + "' AND offer_name='" + offeringUpdate.offering + "';")
     println("query done")
   }
 
