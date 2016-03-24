@@ -4,7 +4,4 @@
 
 [![Stories in Ready](https://badge.waffle.io/geerdink/sparking.svg?label=ready&title=Ready)](http://waffle.io/geerdink/sparking)
 
-Waffle issue board: https://waffle.io/geerdink/sparking
-
-TODO: Codacy
-TODO: Travis CI
+[![Codacy Badge](https://api.codacy.com/project/badge/grade/ec0b01a628524f4d8d1bb37841481a22)](https://www.codacy.com/app/bas/sparking)
