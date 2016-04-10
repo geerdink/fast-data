@@ -36,8 +36,8 @@ object Generator extends App {
   implicit val executor = actorSystem.dispatcher
 
   scheduler.schedule(
-    initialDelay = Duration(10, TimeUnit.SECONDS),
-    interval = Duration(60, TimeUnit.SECONDS),
+    initialDelay = Duration(2, TimeUnit.SECONDS),
+    interval = Duration(1, TimeUnit.SECONDS),
     runnable = task)
 }
 

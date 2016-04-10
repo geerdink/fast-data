@@ -2,11 +2,13 @@ import AssemblyKeys._
 
 assemblySettings
 
-name := """SparkING"""
+organization := "fast-data"
+
+name := """Fast Data in the IoT"""
 
 version := "1.0"
 
-scalaVersion := "2.10.6"
+scalaVersion := "2.10.5"
 
 //resolvers ++= Seq(
 //  "Typesafe repository snapshots" at "http://repo.typesafe.com/typesafe/snapshots/",
@@ -37,14 +39,12 @@ libraryDependencies ++= {
     "org.apache.spark" %% "spark-mllib" % sparkVersion % "provided",
     "org.apache.spark" %% "spark-graphx" % sparkVersion % "provided",
     "org.apache.spark" %% "spark-streaming-kafka" % sparkVersion
-    // "com.datastax.spark" %% "spark-cassandra-connector" % "1.6.0-M1"
-    //"com.websudos" %% "phantom-dsl_2.10" % "1.22.0"
   )
 }
 
 assemblySettings
 
-jarName in assembly := "sparking.jar"
+jarName in assembly := "fast-data.jar"
 
 mergeStrategy in assembly := {
   case m if m.toLowerCase.endsWith("manifest.mf")          => MergeStrategy.discard

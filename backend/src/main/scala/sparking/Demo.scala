@@ -11,7 +11,7 @@ object Demo {
   def main(args: Array[String]) {
     println(">>> start spark job demo")
 
-    val conf = new SparkConf().setAppName("SparkING").setMaster("local[2]")
+    val conf = new SparkConf().setAppName("fast-data").setMaster("local[2]")
     val ssc = new StreamingContext(conf, Seconds(5)) // batch interval = 5 sec
 
     val kafkaParams = Map[String, String](
