@@ -13,8 +13,7 @@ object CustomerEvent {
 
 trait CustomerEvent {
 
-  val user: String
+  val userName: String
 
   def text: String
-
 }
