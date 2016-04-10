@@ -18,9 +18,9 @@ object Generator extends App {
 
   val scheduler = actorSystem.scheduler
 
-  val producer = KafkaProducer("test")
+  val producer1 = KafkaProducer("page_history")
 
-  val randomUser = new RandomSelection("Alice", "Bob", "Zelda", "Betty", "Henk", "Griet")
+  val randomUser = new RandomSelection("Alice", "Bob", "Zelda", "Betty", "Frank")
 
   val randomAmount = new RandomDouble(-30.0, 80.0)
 
@@ -29,10 +29,9 @@ object Generator extends App {
   val task = new Runnable {
     def run() {
       val transaction = Transaction(randomUser.next(), randomAmount.next(), randomBalance.next())
-      producer.send(transaction.text)
+      producer1.send(transaction.text)
     }
   }
-
 
   implicit val executor = actorSystem.dispatcher
 
@@ -40,8 +39,6 @@ object Generator extends App {
     initialDelay = Duration(10, TimeUnit.SECONDS),
     interval = Duration(60, TimeUnit.SECONDS),
     runnable = task)
-
-
 }
 
 class RandomSelection(element: String*) {
@@ -51,7 +48,6 @@ class RandomSelection(element: String*) {
   val rand = new Random(System.currentTimeMillis())
 
   def next(): String = array(rand.nextInt(array.size))
-
 }
 
 class RandomDouble(avg: Double, std: Double) {
@@ -59,5 +55,4 @@ class RandomDouble(avg: Double, std: Double) {
   val rand = new Random(System.currentTimeMillis())
 
   def next(): Double = rand.nextGaussian() * std + avg
-
 }

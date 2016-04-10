@@ -1,6 +1,6 @@
 
 lazy val commonSettings = Seq(
-  organization := "sparking",
+  organization := "fast-data",
   version := "0.1-SNAPSHOT",
   scalaVersion := "2.11.7"
 )
@@ -8,7 +8,7 @@ lazy val commonSettings = Seq(
 lazy val generator = (project in file(".")).
   settings(commonSettings: _*).
   settings(
-    name := "sparking.generator",
+    name := "fast-data.generator",
     crossPaths := false,
     assemblyMergeStrategy in assembly := {
       case PathList("META-INF", "io.netty.versions.properties") => MergeStrategy.first
