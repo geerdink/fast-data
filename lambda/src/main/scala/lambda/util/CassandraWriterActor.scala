@@ -33,15 +33,14 @@ class CassandraWriterActor(topic: String) extends Actor with ActorLogging {
   def receive = {
     case Continue if hasNextInTime =>
       try {
-        log.debug("cassandra-writer-actor continue")
         val msg = it.next()
         val input = new String(msg.message(), "UTF8")
 
-        log.info("createOfferingUpdate, input = " + input)
+        println("createOfferingUpdate, input = " + input)
+
         CassandraHelper.updateScore(CassandraHelper.createProductScore(input))
-        println(s">>> input=${input}")
         connection.commitOffsets
-        log.debug(s"cassandra-writer-actor message = ${input}")
+
         self ! Continue
       }
       catch {
