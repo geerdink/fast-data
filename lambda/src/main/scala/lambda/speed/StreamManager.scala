@@ -21,37 +21,20 @@ object StreamManager {
       ssc, kafkaParams, Set("page_history"))
 
     // initialize Cassandra writer actor
-    implicit val system = ActorSystem("sparking-demo")
+    implicit val system = ActorSystem("fast-data")
     val cassandraWriter = system.actorOf(CassandraWriterActor.props("page_history"))
 
     // process incoming data
-    val count = kafkaDirectStream.count()
-    println(">>> count = " + count)
-    count.print()
-
-    // TOD: write to Cassandra
-
-    //    val lines = ssc.socketTextStream("localhost", 7000) // create a DStream
-    //    val errorLines = lines.filter(_.contains("error"))
-    //    errorLines.foreachRDD(rdd => rdd.foreach(line => println(line)))
+    kafkaDirectStream.foreachRDD(rdd => rdd.foreach(r => ProcessEvent(r._2)))
+    // TODO: write to Cassandra
 
     ssc.start() // it's necessary to explicitly tell the StreamingContext to start receiving data
     ssc.awaitTermination() // wait for the job to finish
 
-    println(">>> awaiting termination...")
-
-
-    // implicit val system = ActorSystem("sparking-demo")
-    // val topic = "test"
-    //    val alert = system.actorOf(KafkaConsumerActor.props("test", RuleEngine.receive))
-    // println(topic)
-
-    //val stream = ssc.socketStream("localhost", 7777)
-
-    //stream.
-
-    //ssc.start()
-    //ssc.awaitTermination()
+    def ProcessEvent(input: String) = {
+      println("rdd value: " + input)
+      cassandraWriter ! input
+    }
   }
 
 }

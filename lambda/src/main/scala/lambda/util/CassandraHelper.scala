@@ -4,10 +4,10 @@ import java.net.URI
 import com.datastax.driver.core.{Cluster, QueryOptions, ConsistencyLevel}
 
 object CassandraHelper {
-  def createOfferingUpdate(input: String): OfferingUpdate = {
-    //user=1,offer=Beleggen,scoreDelta=2.5
+  def createProductScore(input: String): ProductScore = {
+    //username=Piet,category=phones,productname=iphone,score=2
     val parts = input.split(',')
-    new OfferingUpdate(parts(0).split('=')(1), parts(1).split('=')(1), parts(2).split('=')(1).toDouble)
+    new ProductScore(parts(0).split('=')(1), parts(1).split('=')(1), parts(2).split('=')(1), parts(3).split('=')(1).toInt)
   }
 
   object Helper {
@@ -35,22 +35,19 @@ object CassandraHelper {
     val host = uri.getHost
     val hosts = Seq(uri.getHost) ++ additionalHosts
     val port = uri.getPort
-    val keyspace = "sparking"
+    val keyspace = "fastdata"
   }
 
-  def updateOfferInDb(offeringUpdate: OfferingUpdate): Unit = {
+  def updateScore(productScore: ProductScore): Unit = {
     val uri = CassandraConnectionUri("cassandra://localhost:9042")
     val session = Helper.createSessionAndInitKeyspace(uri)
+
     println("uri and session set")
 
-    val row = session.execute("SELECT score FROM sparking.offers WHERE user_name='" + offeringUpdate.userId + "' AND offer_name='" + offeringUpdate.offering + "';")
-    val score = if (row.one() == null) 0 else row.one.getDouble(0)
-    println("current score: " + score)
+    val query = "INSERT INTO fastdata.products (user_name, product_category, product_name, score, insertion_time) VALUES " +
+      "(%d, %d, %d, %d, now());" format (productScore.userName, productScore.productCategory, productScore.productName, productScore.score)
+    val result = session.execute(query)
 
-    val newScore = offeringUpdate.scoreDelta + score
-    println("new score: " + newScore)
-
-    val result = session.execute("UPDATE sparking.offers SET score = " + newScore.toString + " WHERE user_name='" + offeringUpdate.userId + "' AND offer_name='" + offeringUpdate.offering + "';")
-    println("query done")
+    println("query done, result: " + result)
   }
 }

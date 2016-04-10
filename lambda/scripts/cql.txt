@@ -1,0 +1,9 @@
+CREATE KEYSPACE fastdata;
+
+USE fastdata;
+
+CREATE TABLE products (user_name text, product_category text, product_name text, score int, insertion_time timeuuid, PRIMARY KEY (user_name, product_category, product_name));
+
+INSERT INTO products (user_name, product_category, product_name, score, insertion_time) VALUES ('Bas', 'phone', 'iPhone 5s', 2, now());
+
+SELECT user_name, product_category, product_name, dateOf(insertion_time) AS data FROM products;

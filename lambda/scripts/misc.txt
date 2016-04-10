@@ -1,1 +1,1 @@
-d:\programs\PuTTY\pscp.exe .\backend\target\scala-2.10\sparking_2.10-1.0.jar sparking@172.16.33.16:/home/sparking/Apps
+d:\programs\PuTTY\pscp.exe .\lambda\target\scala-2.10\fast-data.jar scala-academy@172.16.33.16:/home/lambda/Apps

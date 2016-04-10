@@ -38,7 +38,7 @@ class CassandraWriterActor(topic: String) extends Actor with ActorLogging {
         val input = new String(msg.message(), "UTF8")
 
         log.info("createOfferingUpdate, input = " + input)
-        CassandraHelper.updateOfferInDb(CassandraHelper.createOfferingUpdate(input))
+        CassandraHelper.updateScore(CassandraHelper.createProductScore(input))
         println(s">>> input=${input}")
         connection.commitOffsets
         log.debug(s"cassandra-writer-actor message = ${input}")
