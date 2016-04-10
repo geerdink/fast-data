@@ -1,5 +1,0 @@
-{
-  "directory": "app/bower_components",
-  "proxy":"http://localhost:53128",
-  "https-proxy":"http://localhost:53128 "
-}
