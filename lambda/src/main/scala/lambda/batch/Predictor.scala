@@ -1,4 +1,4 @@
-package lambda.prediction
+package lambda.batch
 
 import org.apache.spark.{SparkConf, SparkContext}
 
