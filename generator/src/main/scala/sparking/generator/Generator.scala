@@ -21,13 +21,12 @@ object Generator extends App {
   val producer1 = KafkaProducer("search_history")
 
   val randomUserName = new RandomSelection("Alice", "Bob", "Zelda", "Betty", "Frank", "Rose", "Louise", "Sebastian", "Robert", "Bumba", "Ernie", "Eric", "Zoe", "Emma", "Bea", "Joe", "Miranda")
-  val randomProductCategory = new RandomSelection("Phone", "Sneakers", "Shirt", "Game", "Book")
+  val randomProductCategory = new RandomSelection("Phone", "Sneakers", "Game", "Book")
   def randomProductName(category: String) = category match  {
     case "Phone" => new RandomSelection("iPhone 6s", "HTC One", "Motorola Moto G", "One Plus Two", "Nokia Lumia", "Sony Experia Z")
-    case "Sneakers" => new RandomSelection("Nike Air Max", "Clarks Desert Boots", "Adidas Classics")
-    case "Shirt" => new RandomSelection("")
+    case "Sneakers" => new RandomSelection("Nike Air Max", "Adidas Originals", "Tommy Hilfiger Harbor", "Asics Gel", "Converse All Star", "Vans Atwood", "New Balance ML")
     case "Book" => new RandomSelection("The Art of Prolog", "Godel, Escher, Bach", "Structured Design", "Patterns of Enterprise Application Architecture", "The Elegant Universe", "The Hidden Reality", "How to win at Texas Hold'em Poker", "On The Shoulders Of Giants")
-    case "Game" => new RandomSelection("Mass Effect 3", "Black Ops", "")
+    case "Game" => new RandomSelection("Mass Effect 3", "Call of Duty: Black Ops", "Tom Clancy's The Division", "Deus Ex: Mankind Divided", " Far Cry Primal", "Hitman 6", "Doom 2016", "Dark Souls III", "Street Fighter V")
   }
 
   val randomScore = new RandomInt()
