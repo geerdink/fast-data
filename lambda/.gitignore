@@ -6,7 +6,9 @@
 .history/
 .lib/
 dist/*
-target/
+target/resolution-cache/
+target/streams/
+target/test-reports/
 lib_managed/
 src_managed/
 project/boot/
