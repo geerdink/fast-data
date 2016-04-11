@@ -28,7 +28,7 @@ object StreamManager {
     kafkaDirectStream.foreachRDD(rdd => {
       print(" IProcessing incoming RDD, ")
       rdd.foreach(r => {
-        println(f" parts: %d, %d" format (r._1, r._2))
+        println(s" parts: ${r._1}, ${r._2}")
         ProcessEvent(r._2)
       })
     })

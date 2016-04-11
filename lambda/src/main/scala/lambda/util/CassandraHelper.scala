@@ -45,7 +45,7 @@ object CassandraHelper {
     println("uri and session set")
 
     val query = "INSERT INTO fastdata.products (user_name, product_category, product_name, score, insertion_time) VALUES " +
-      "(%d, %d, %d, %d, now());" format (productScore.userName, productScore.productCategory, productScore.productName, productScore.score)
+      s"('${productScore.userName}', '${productScore.productCategory}', '${productScore.productName}', ${productScore.score}, now())"
     val result = session.execute(query)
 
     println("query done, result: " + result)
