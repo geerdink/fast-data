@@ -43,7 +43,7 @@ object Generator extends App {
 
   scheduler.schedule(
     initialDelay = Duration(2, TimeUnit.SECONDS),
-    interval = Duration(100, TimeUnit.MILLISECONDS),
+    interval = Duration(1, TimeUnit.SECONDS),
     runnable = task)
 }
 
