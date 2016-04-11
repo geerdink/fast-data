@@ -13,6 +13,7 @@ import sparking.util.KafkaProducer
 import scala.concurrent.duration.Duration
 
 object Generator extends App {
+  if (args.length != 1) throw new Exception("Please specify the interval in milliseconds, e.g. 'generator 1000'")
 
   val actorSystem = ActorSystem()
 
@@ -24,8 +25,8 @@ object Generator extends App {
   val randomProductCategory = new RandomSelection("Phone", "Sneakers", "Game", "Book")
   def randomProductName(category: String) = category match  {
     case "Phone" => new RandomSelection("iPhone 6s", "HTC One", "Motorola Moto G", "One Plus Two", "Nokia Lumia", "Sony Experia Z")
-    case "Sneakers" => new RandomSelection("Nike Air Max", "Adidas Originals", "Tommy Hilfiger Harbor", "Asics Gel", "Converse All Star", "Vans Atwood", "New Balance ML")
-    case "Book" => new RandomSelection("The Art of Prolog", "Godel, Escher, Bach", "Structured Design", "Patterns of Enterprise Application Architecture", "The Elegant Universe", "The Hidden Reality", "How to win at Texas Hold'em Poker", "On The Shoulders Of Giants")
+    case "Sneakers" => new RandomSelection("Nike Air Max", "Adidas Originals", "Asics Gel", "Converse All Star", "Vans Atwood", "New Balance")
+    case "Book" => new RandomSelection("The Art of Prolog", "Godel, Escher, Bach", "Structured Design", "Patterns of EAA", "The Elegant Universe", "The Hidden Reality", "How to win at Texas Hold'em", "On The Shoulders Of Giants")
     case "Game" => new RandomSelection("Mass Effect 3", "Call of Duty: Black Ops", "Tom Clancy's The Division", "Deus Ex: Mankind Divided", " Far Cry Primal", "Hitman 6", "Doom 2016", "Dark Souls III", "Street Fighter V")
   }
 
@@ -43,7 +44,7 @@ object Generator extends App {
 
   scheduler.schedule(
     initialDelay = Duration(2, TimeUnit.SECONDS),
-    interval = Duration(1, TimeUnit.SECONDS),
+    interval = Duration(args(0).toInt, TimeUnit.MILLISECONDS),
     runnable = task)
 }
 

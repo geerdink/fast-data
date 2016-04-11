@@ -1,8 +1,9 @@
 
 lazy val commonSettings = Seq(
   organization := "fast-data",
-  version := "0.1-SNAPSHOT",
-  scalaVersion := "2.11.7"
+  version := "0.1",
+  scalaVersion := "2.11.7",
+  assemblyJarName := "generator.jar"
 )
 
 lazy val generator = (project in file(".")).
