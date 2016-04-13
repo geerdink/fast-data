@@ -6,20 +6,18 @@ import lambda.data._
 
 object CassandraHelper {
   val uri = CassandraConnectionUri("cassandra://localhost:9042")
-  val session = Helper.createSessionAndInitKeyspace(uri)
+  val session = createSessionAndInitKeyspace(uri)
 
-  object Helper {
-    def createSessionAndInitKeyspace(uri: CassandraConnectionUri,
-                                     defaultConsistencyLevel: ConsistencyLevel = QueryOptions.DEFAULT_CONSISTENCY_LEVEL) = {
-      val cluster = new Cluster.Builder().
-        addContactPoints(uri.hosts.toArray: _*).
-        withPort(uri.port).
-        withQueryOptions(new QueryOptions().setConsistencyLevel(defaultConsistencyLevel)).build
+  def createSessionAndInitKeyspace(uri: CassandraConnectionUri,
+                                   defaultConsistencyLevel: ConsistencyLevel = QueryOptions.DEFAULT_CONSISTENCY_LEVEL) = {
+    val cluster = new Cluster.Builder().
+      addContactPoints(uri.hosts.toArray: _*).
+      withPort(uri.port).
+      withQueryOptions(new QueryOptions().setConsistencyLevel(defaultConsistencyLevel)).build
 
-      val session = cluster.connect
-      session.execute(s"USE ${uri.keyspace}")
-      session
-    }
+    val session = cluster.connect
+    session.execute(s"USE ${uri.keyspace}")
+    session
   }
 
   case class CassandraConnectionUri(connectionString: String) {
@@ -34,6 +32,14 @@ object CassandraHelper {
     val hosts = Seq(uri.getHost) ++ additionalHosts
     val port = uri.getPort
     val keyspace = "fastdata"
+  }
+
+  def insertScores(productScores: List[ProductScore]): Unit = {
+    var query = ""
+    productScores.foreach(productScore => query += "INSERT INTO fastdata.products (user_name, product_category, product_name, score, insertion_time) VALUES " +
+      s"('${productScore.userName}', '${productScore.productCategory}', '${productScore.productName}', ${productScore.score}, now()); ")
+
+    session.execute(query)
   }
 
   def insertScore(productScore: ProductScore): Unit = {

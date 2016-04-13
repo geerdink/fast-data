@@ -5,20 +5,19 @@ import lambda.LambdaBase
 import lambda.util._
 import lambda.data._
 import org.apache.spark.{SparkConf, SparkContext}
-import org.apache.spark.mllib.classification.LogisticRegressionModel
+import org.apache.spark.mllib.regression._
 import org.apache.spark.streaming.kafka.KafkaUtils
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 import org.apache.spark.mllib.linalg._
-import org.apache.spark.mllib.regression.LinearRegressionModel
 
 class SocialMedia extends LambdaBase {
-  // initialize Spark Streaming
+  // initialize Spark MLlib and Streaming
   val conf = new SparkConf().setAppName("fast-data-social-media").setMaster("local[2]")
   val sc = new SparkContext(conf)
   val ssc = new StreamingContext(conf, Seconds(5)) // batch interval = 5 sec
 
   // load machine learning model from disk
-  val model = LogisticRegressionModel.load(sc, "/home/scala-academy/social_media.model")
+  val model = LinearRegressionModel.load(sc, "/home/scala-academy/social_media.model")
 
   val kafkaParams = Map[String, String]("metadata.broker.list" -> "localhost:9092")
   val kafkaDirectStream = KafkaUtils.createDirectStream[String, String, StringDecoder, StringDecoder](
@@ -43,7 +42,7 @@ class SocialMedia extends LambdaBase {
     CassandraHelper.updateUserCategory(user)
   }
 
-  // TODO: after a certain time interval, run a machine learning algorithm to retrain the model.
+  // after a certain time interval, run a machine learning algorithm to retrain the model.
   // model.trainOn(trainingData)
   // model.predictOnValues(testData.map(lp => (lp.label, lp.features))).print()
 }

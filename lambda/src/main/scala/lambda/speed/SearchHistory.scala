@@ -24,7 +24,7 @@ object SearchHistory extends LambdaBase {
   kafkaDirectStream
     .map(rdd => ProductScoreHelper.createProductScore(rdd._2))
     .filter(_.productCategory != "Sneakers")
-    .foreachRDD(rdd => rdd.foreach(CassandraHelper.insertScore))
+    .foreachRDD(rdd =>  rdd.foreach(CassandraHelper.insertScore))
 
     //.foreachRDD(rdd => rdd.foreach(cassandraWriter ! CassandraHelper.updateScore(_)))
 
