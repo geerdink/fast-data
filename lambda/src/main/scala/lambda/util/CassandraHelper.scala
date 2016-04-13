@@ -1,15 +1,11 @@
 package lambda.util
 
 import java.net.URI
-import com.datastax.driver.core.{Cluster, QueryOptions, ConsistencyLevel}
+
+import com.datastax.driver.core.{Cluster, ConsistencyLevel, QueryOptions}
+import lambda.ProductScore
 
 object CassandraHelper {
-  def createProductScore(input: String): ProductScore = {
-    //username=Piet,category=phones,productname=iphone,score=2
-    val parts = input.split(',')
-    new ProductScore(parts(0).split('=')(1), parts(1).split('=')(1), parts(2).split('=')(1), parts(3).split('=')(1).toInt)
-  }
-
   object Helper {
     def createSessionAndInitKeyspace(uri: CassandraConnectionUri,
                                      defaultConsistencyLevel: ConsistencyLevel = QueryOptions.DEFAULT_CONSISTENCY_LEVEL) = {
@@ -42,12 +38,9 @@ object CassandraHelper {
     val uri = CassandraConnectionUri("cassandra://localhost:9042")
     val session = Helper.createSessionAndInitKeyspace(uri)
 
-    println("uri and session set")
-
     val query = "INSERT INTO fastdata.products (user_name, product_category, product_name, score, insertion_time) VALUES " +
       s"('${productScore.userName}', '${productScore.productCategory}', '${productScore.productName}', ${productScore.score}, now())"
-    val result = session.execute(query)
 
-    println("query done, result: " + result)
+    session.execute(query)
   }
 }

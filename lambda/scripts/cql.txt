@@ -7,3 +7,8 @@ CREATE TABLE products (user_name text, product_category text, product_name text,
 INSERT INTO products (user_name, product_category, product_name, score, insertion_time) VALUES ('Bas', 'phone', 'iPhone 5s', 2, now());
 
 SELECT user_name, product_category, product_name, dateOf(insertion_time) AS data FROM products;
+
+CREATE TABLE users (user_name text, location text, top_category,
+
+INSERT INTO users (user_name, product_category, product_name, score, insertion_time) VALUES ('Bas', 'phone', 'iPhone 5s', 2, now());
+
