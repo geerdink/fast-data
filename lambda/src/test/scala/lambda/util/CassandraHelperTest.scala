@@ -2,7 +2,7 @@ package lambda.util
 
 import org.scalatest._
 import Matchers._
-import lambda.ProductScoreHelper
+import lambda.data.ProductScoreHelper
 
 class CassandraHelperTest extends FunSpec {
 

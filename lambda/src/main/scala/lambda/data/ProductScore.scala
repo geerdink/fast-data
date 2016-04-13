@@ -1,4 +1,4 @@
-package lambda
+package lambda.data
 
 case class ProductScore(userName: String, productCategory: String, productName: String, score: Integer)
 

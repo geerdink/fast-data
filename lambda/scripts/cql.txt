@@ -3,12 +3,13 @@ CREATE KEYSPACE fastdata;
 USE fastdata;
 
 CREATE TABLE products (user_name text, product_category text, product_name text, score int, insertion_time timeuuid, PRIMARY KEY (user_name, product_category, product_name));
+CREATE TABLE users (user_name text, top_product_category text, update_time timeuuid, PRIMARY KEY (user_name));
+CREATE TABLE social (user_name text, message text, insertion_time timeuuid, PRIMARY KEY (user_name, message));
 
 INSERT INTO products (user_name, product_category, product_name, score, insertion_time) VALUES ('Bas', 'phone', 'iPhone 5s', 2, now());
+INSERT INTO users (user_name, top_product_category, update_time) VALUES ('Bas', 'phone', now());
+INSERT INTO social (user_name, message, insertion_time) VALUES ('Bas', 'Op weg naar de winkel voor een nieuwe telefoon!', now());
 
 SELECT user_name, product_category, product_name, dateOf(insertion_time) AS data FROM products;
 
-CREATE TABLE users (user_name text, location text, top_category,
-
-INSERT INTO users (user_name, product_category, product_name, score, insertion_time) VALUES ('Bas', 'phone', 'iPhone 5s', 2, now());
-
+UPDATE users SET top_product_category = 'test', update_time = now() WHERE user_name = 'Bas'

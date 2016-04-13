@@ -1,22 +1,16 @@
-/**
-  * Ger van Rossum (2016).
-  */
 package lambda.util
 
 import akka.actor.{Actor, ActorLogging, Props}
 import kafka.consumer.{ConsumerIterator, ConsumerTimeoutException}
 
 object KafkaConsumerActor {
-
   def props(topic: String, consumer: String => Unit) =
     Props(classOf[KafkaConsumerActor], topic, consumer)
 
   private object Continue
-
 }
 
 class KafkaConsumerActor(topic: String, consumer: String => Unit) extends Actor with ActorLogging {
-
   import KafkaConsumerActor._
 
   private lazy val connection = KafkaConnection.consumer()
@@ -49,7 +43,5 @@ class KafkaConsumerActor(topic: String, consumer: String => Unit) extends Actor 
     case Continue =>
       log.debug("kafka-consumer-actor continue without message")
       self ! Continue
-
   }
-
 }
