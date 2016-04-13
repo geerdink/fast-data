@@ -1,7 +1,7 @@
 /**
   * Ger van Rossum (2016).
   */
-package sparking.util
+package lambda.util
 
 import java.util.Properties
 

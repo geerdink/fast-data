@@ -1,4 +1,4 @@
-package sparking.data
+package lambda.data
 
 import scala.util.Try
 

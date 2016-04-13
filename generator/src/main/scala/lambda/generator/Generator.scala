@@ -1,14 +1,14 @@
 /**
   * Ger van Rossum (2016).
   */
-package sparking.generator
+package lambda.generator
 
 import java.util.concurrent.TimeUnit
 import java.util.{Random}
 
 import akka.actor.ActorSystem
-import sparking.data._
-import sparking.util.KafkaProducer
+import lambda.data._
+import lambda.util.KafkaProducer
 
 import scala.concurrent.duration.Duration
 

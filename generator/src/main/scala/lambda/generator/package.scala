@@ -1,7 +1,7 @@
 /**
   * Ger van Rossum (2016).
   */
-package sparking
+package lambda
 
 package object generator {
 

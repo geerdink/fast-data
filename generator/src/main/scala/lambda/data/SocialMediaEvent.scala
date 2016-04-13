@@ -1,4 +1,4 @@
-package sparking.data
+package lambda.data
 
 import scala.util.Try
 
@@ -13,5 +13,5 @@ object SocialMediaEvent {
 }
 
 case class SocialMediaEvent(userName: String, message: String) extends CustomerEvent {
-  override def text: String = s"user_name=${userName},message=${productCategory}"
+  override def text: String = s"user_name=${userName},message=${message}"
 }

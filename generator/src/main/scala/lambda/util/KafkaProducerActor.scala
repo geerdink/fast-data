@@ -1,4 +1,4 @@
-package sparking.util
+package lambda.util
 
 import akka.actor.{Actor, Props}
 
