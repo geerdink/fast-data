@@ -1,6 +1,3 @@
-/**
-  * Ger van Rossum (2016).
-  */
 package sparking.data
 
 import scala.util.Try

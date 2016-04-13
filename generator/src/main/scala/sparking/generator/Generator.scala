@@ -4,22 +4,23 @@
 package sparking.generator
 
 import java.util.concurrent.TimeUnit
-import java.util.{Date, Random}
+import java.util.{Random}
 
 import akka.actor.ActorSystem
-import sparking.data.ProductScore
+import sparking.data._
 import sparking.util.KafkaProducer
 
 import scala.concurrent.duration.Duration
 
 object Generator extends App {
-  if (args.length != 1) throw new Exception("Please specify the interval in milliseconds, e.g. 'generator 1000'")
+  if (args.length != 2) throw new Exception("Please specify the intervals of the messages (search_history, social_media) in milliseconds, e.g. 'generator 1000 2000'")
 
   val actorSystem = ActorSystem()
 
   val scheduler = actorSystem.scheduler
 
   val producer1 = KafkaProducer("search_history")
+  val producer2 = KafkaProducer("social_media")
 
   val randomUserName = new RandomSelection("Alice", "Bob", "Zelda", "Betty", "Frank", "Rose", "Louise", "Sebastian", "Robert", "Bumba", "Ernie", "Eric", "Zoe", "Emma", "Bea", "Joe", "Miranda")
   val randomProductCategory = new RandomSelection("Phone", "Sneakers", "Game", "Book")
@@ -29,14 +30,20 @@ object Generator extends App {
     case "Book" => new RandomSelection("The Art of Prolog", "Godel, Escher, Bach", "Structured Design", "Patterns of EAA", "The Elegant Universe", "The Hidden Reality", "How to win at Texas Hold'em", "On The Shoulders Of Giants")
     case "Game" => new RandomSelection("Mass Effect 3", "Call of Duty: Black Ops", "Tom Clancy's The Division", "Deus Ex: Mankind Divided", " Far Cry Primal", "Hitman 6", "Doom 2016", "Dark Souls III", "Street Fighter V")
   }
-
   val randomScore = new RandomInt()
 
-  val task = new Runnable {
+  val task1 = new Runnable {
     def run() {
       val cat = randomProductCategory.next()
       val productScore = ProductScore(randomUserName.next(), cat, randomProductName(cat).next(), randomScore.next())
       producer1.send(productScore.text)
+    }
+  }
+
+  val task2 = new Runnable {
+    def run() {
+      val socialMediaEvent = SocialMediaEvent(randomUserName.next(), new RandomString(new RandomInt().next() + 50).next())
+      producer2.send(socialMediaEvent.text)
     }
   }
 
@@ -45,7 +52,12 @@ object Generator extends App {
   scheduler.schedule(
     initialDelay = Duration(2, TimeUnit.SECONDS),
     interval = Duration(args(0).toInt, TimeUnit.MILLISECONDS),
-    runnable = task)
+    runnable = task1)
+
+  scheduler.schedule(
+    initialDelay = Duration(2, TimeUnit.SECONDS),
+    interval = Duration(args(1).toInt, TimeUnit.MILLISECONDS),
+    runnable = task2)
 }
 
 class RandomSelection(element: String*) {
@@ -62,4 +74,8 @@ class RandomInt() {
 class RandomDouble(avg: Double, std: Double) {
   val rand = new Random(System.currentTimeMillis())
   def next(): Double = rand.nextGaussian() * std + avg
+}
+
+class RandomString(length: Int) {
+  def next(): String = scala.util.Random.alphanumeric.take(length).mkString
 }
