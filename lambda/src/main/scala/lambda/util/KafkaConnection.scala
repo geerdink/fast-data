@@ -1,6 +1,3 @@
-/**
-  * Ger van Rossum (2016).
-  */
 package lambda.util
 
 import java.util.Properties
@@ -17,23 +14,18 @@ import kafka.producer.{Producer, ProducerConfig}
   * @param config configuration object
   */
 private class ConfigProperties(config: Config) extends Properties() {
-
   override def containsKey(name: AnyRef): Boolean = super.containsKey(name) || config.hasPath(name.toString)
 
   override def getProperty(name: String): String =
     if (super.containsKey(name)) super.getProperty(name)
     else config.getString(name)
-
 }
 
 object KafkaConnection extends KafkaConnection("kafka") {
-
   def apply(path: String) = new KafkaConnection(path)
-
 }
 
 class KafkaConnection(path: String) {
-
   private val config = ConfigFactory.load.getConfig(path)
 
   def producer(clientId: String = "") = {
@@ -48,6 +40,5 @@ class KafkaConnection(path: String) {
     if (timeout > 0) props.put("consumer.timeout.ms", timeout.toString)
     Consumer.create(new ConsumerConfig(props))
   }
-
 }
 
