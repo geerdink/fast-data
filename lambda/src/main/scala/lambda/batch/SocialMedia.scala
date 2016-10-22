@@ -6,13 +6,15 @@ import lambda.util._
 import lambda.data._
 import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.mllib.regression._
-import org.apache.spark.streaming.kafka.KafkaUtils
+import org.apache.spark.streaming.kafka010._
+import org.apache.spark.streaming.kafka010.LocationStrategies.PreferConsistent
+import org.apache.spark.streaming.kafka010.ConsumerStrategies.Subscribe
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 import org.apache.spark.mllib.linalg._
 
 class SocialMedia extends LambdaBase {
   // initialize Spark MLlib and Streaming
-  val conf = new SparkConf().setAppName("fast-data-social-media").setMaster("local[2]")
+  val conf = new SparkConf().setAppName("fast-data-social-media").setMaster("local[*]")
   val sc = new SparkContext(conf)
   val ssc = new StreamingContext(conf, Seconds(5)) // batch interval = 5 sec
 
@@ -20,11 +22,11 @@ class SocialMedia extends LambdaBase {
   val model = LinearRegressionModel.load(sc, "/home/scala-academy/social_media.model")
 
   val kafkaParams = Map[String, String]("metadata.broker.list" -> "localhost:9092")
-  val kafkaDirectStream = KafkaUtils.createDirectStream[String, String, StringDecoder, StringDecoder](
-    ssc, kafkaParams, Set("social_media"))
+  val kafkaTopics = Array("test", "social_media")
+  val kafkaDirectStream = KafkaUtils.createDirectStream[String, String](ssc, PreferConsistent, Subscribe[String, String](kafkaTopics, kafkaParams))
 
   kafkaDirectStream
-    .map(rdd => SocialMediaEventHelper.createSocialMediaEvent(rdd._2))
+    .map(rdd => SocialMediaEventHelper.createSocialMediaEvent(rdd.value()))
     .foreachRDD(rdd => rdd.foreach(processSocialMediaEvent))
 
   ssc.start() // it's necessary to explicitly tell the StreamingContext to start receiving data

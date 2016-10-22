@@ -8,7 +8,7 @@ name := """Fast Data in the IoT"""
 
 version := "1.0"
 
-scalaVersion := "2.10.5"
+scalaVersion := "2.11.8"
 
 resolvers ++= Seq(
   Resolver.sonatypeRepo("public"),
@@ -17,19 +17,16 @@ resolvers ++= Seq(
 )
 
 libraryDependencies ++= {
-  val sparkVersion = "1.6.1"
+  val sparkVersion = "2.0.1"
   val akkaVersion = "2.3.9"
   val sprayVersion = "1.3.3"
-  val kafkaVersion = "0.8.2.1"
   Seq(
-    "org.apache.spark" %% "spark-core" % sparkVersion % "provided",
-    "org.apache.spark" %% "spark-hive" % sparkVersion % "provided",
-    "org.apache.spark" %% "spark-sql" % sparkVersion % "provided",
-    "org.apache.spark" %% "spark-streaming" % sparkVersion % "provided",
-    "org.apache.spark" %% "spark-mllib" % sparkVersion % "provided",
-    "org.apache.spark" %% "spark-graphx" % sparkVersion % "provided",
-    "org.apache.spark" %% "spark-streaming-kafka" % sparkVersion,
-    "org.apache.kafka" %% "kafka" % kafkaVersion,
+    "org.apache.spark" %% "spark-core" % sparkVersion,
+    "org.apache.spark" %% "spark-hive" % sparkVersion,
+    "org.apache.spark" %% "spark-sql" % sparkVersion,
+    "org.apache.spark" %% "spark-streaming" % sparkVersion,
+    "org.apache.spark" %% "spark-mllib" % sparkVersion,
+    "org.apache.spark" %% "spark-streaming-kafka-0-10" % sparkVersion,
     "com.typesafe.akka" %% "akka-actor" % akkaVersion,
     "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
     "com.typesafe.akka" %% "akka-testkit" % akkaVersion % "test",
