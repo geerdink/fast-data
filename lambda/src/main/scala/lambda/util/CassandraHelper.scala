@@ -34,6 +34,10 @@ object CassandraHelper {
     val keyspace = "fastdata"
   }
 
+  def log(s: String) = {
+    session.execute(s"INSERT INTO fastdata.log (log, insertion_time) VALUES ('$s', now());")
+  }
+
   def insertScores(parkingLotScores: List[ParkingLotScore]): Unit = {
     var query = ""
     parkingLotScores.foreach(parkingLotScore => query += "INSERT INTO fastdata.parkingLotScores (name, score, insertion_time) VALUES " +

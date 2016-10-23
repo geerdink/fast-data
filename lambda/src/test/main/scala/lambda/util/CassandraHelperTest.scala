@@ -4,16 +4,14 @@ import org.scalatest._
 import Matchers._
 import lambda.domain.ParkingLotScoreHelper
 
-import org.slf4j.LoggerFactory
-import org.slf4j.Logger
-
 class CassandraHelperTest extends FunSpec {
 
   describe("The Cassandra helper") {
-    it ("should convert a string to a parkingLotScore") {
+    it ("should write a log message to the log table") {
+      CassandraHelper.log("This is a test message, created in a unit test")
+    }
 
-      val log = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME)
-      log.info("Fast data application started.")
+    it ("should convert a string to a parkingLotScore") {
 
       // val ps = ParkingLotScoreHelper.createParkingLotScore("name=Test,productcategory=Phones,productName=iPhone,score=3")
 

@@ -1,6 +1,10 @@
-CREATE KEYSPACE fastdata;
+CREATE KEYSPACE fastdata WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 3 };
 
 USE fastdata;
+
+CREATE TABLE log (log text, insertion_time timeuuid, PRIMARY KEY (insertion_time));
+
+INSERT INTO log (log, update_time) VALUES ('First log!', now());
 
 CREATE TABLE products (user_name text, product_category text, product_name text, score int, insertion_time timeuuid, PRIMARY KEY (user_name, product_category, product_name));
 CREATE TABLE users (user_name text, top_product_category text, update_time timeuuid, PRIMARY KEY (user_name));

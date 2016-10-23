@@ -17,6 +17,8 @@ object ParkingGuide extends LambdaBase {
   val log = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME)
   log.info("Fast data application started.")
 
+  CassandraHelper.log("Started!")
+
   // initialize Cassandra writer
   //val cassandraWriter = system.actorOf(CassandraWriterActor.props)
 
@@ -67,6 +69,10 @@ object ParkingGuide extends LambdaBase {
   // 4. predict capacity for each parking lot (score feature sets)
 
   // 5. update scores in database
+
+  stream
+    .map(event => ParkingLotScoreHelper.createParkingLotScore(event.value))    // DStream[ParkingLotScore]
+    .foreachRDD(rdd => rdd.foreach(score => CassandraHelper.log(score.name + " = " + score.score)))
 
   // visualize
   stream.print

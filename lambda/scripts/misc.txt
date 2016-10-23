@@ -1,1 +1,0 @@
-d:\programs\PuTTY\pscp.exe .\lambda\target\scala-2.10\fast-data.jar scala-academy@172.16.33.16:/home/lambda/Apps
