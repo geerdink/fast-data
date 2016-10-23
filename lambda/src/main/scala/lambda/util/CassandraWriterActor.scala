@@ -13,13 +13,13 @@ class CassandraWriterActor extends Actor with ActorLogging {
   import CassandraWriterActor._
 
   def receive = {
-    case ps : ParkingLotScore =>
+    case cps : CarParkScore =>
       try {
-        CassandraHelper.insertScore(ps)
+        CassandraHelper.insertScore(cps)
       }
       catch {
         case e: Exception => {
-          log.error("cassandra-writer-actor received an invalid message while inserting product score! Error = " + e.getMessage)
+          log.error("cassandra-writer-actor received an invalid message while inserting car park score! Error = " + e.getMessage)
           self ! Continue
         }
       }
@@ -29,17 +29,7 @@ class CassandraWriterActor extends Actor with ActorLogging {
       }
       catch {
         case e: Exception => {
-          log.error("cassandra-writer-actor received an invalid message while inserting social media event! Error = " + e.getMessage)
-          self ! Continue
-        }
-      }
-    case uuc : ParkingLot =>
-      try {
-        //CassandraHelper.updateUserCategory(uuc)
-      }
-      catch {
-        case e: Exception => {
-          log.error("cassandra-writer-actor received an invalid message while updating user category! Error = " + e.getMessage)
+          log.error("cassandra-writer-actor received an invalid message while inserting car location event! Error = " + e.getMessage)
           self ! Continue
         }
       }

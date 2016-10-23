@@ -38,7 +38,7 @@ object CassandraHelper {
     session.execute(s"INSERT INTO fastdata.log (log, insertion_time) VALUES ('$s', now());")
   }
 
-  def insertScores(parkingLotScores: List[ParkingLotScore]): Unit = {
+  def insertScores(parkingLotScores: List[CarParkScore]): Unit = {
     var query = ""
     parkingLotScores.foreach(parkingLotScore => query += "INSERT INTO fastdata.parkingLotScores (name, score, insertion_time) VALUES " +
       s"('${parkingLotScore.name}', ${parkingLotScore.score}, now()); ")
@@ -46,7 +46,7 @@ object CassandraHelper {
     session.execute(query)
   }
 
-  def insertScore(parkingLotScore: ParkingLotScore): Unit = {
+  def insertScore(parkingLotScore: CarParkScore): Unit = {
     val query = "INSERT INTO fastdata.parkingLotScores (name, score, insertion_time) VALUES " +
       s"('${parkingLotScore.name}', ${parkingLotScore.score}, now())"
 
@@ -59,7 +59,7 @@ object CassandraHelper {
 //    session.execute(query)
 //  }
 //
-//  def updateUserCategory(user: ParkingLot): Unit = {
+//  def updateUserCategory(user: CarPark): Unit = {
 //    val query = s"UPDATE fastdata.users SET top_product_category = '${user.capacity}', update_time = now() WHERE user_name = '${user.name}'"
 //
 //    session.execute(query)

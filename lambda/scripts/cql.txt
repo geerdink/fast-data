@@ -4,7 +4,31 @@ USE fastdata;
 
 CREATE TABLE log (log text, insertion_time timeuuid, PRIMARY KEY (insertion_time));
 
-INSERT INTO log (log, update_time) VALUES ('First log!', now());
+INSERT INTO log (log, insertion_time) VALUES ('First log!', now());
+SELECT log, dateOf(insertion_time) AS date FROM log;
+
+------------
+
+// static:
+// - name
+// - latitude
+// - longitude
+// - capacity
+// dynamic: (updated with hourly batch)
+// - usage  (percentage of capacity that is not available)  0..1
+// - accessibility  (traffic, road works)  0..1
+// - openFrom  (starting time) 0..24
+// - openUntil (end time) 0..24
+// - rate  (price per hour)
+// event-based: (updated with each event)
+// - cars  (sum: for all cars in neighborhood, 1 / absolute distance relative to the car park (car-carPark lat/long) )
+CREATE TABLE carParkFeatures (name text, latitude float, longitude float, capacity int, usage float, accessibility float, openFrom int openUntil int, update_time timeuuid, PRIMARY KEY (name));
+
+CREATE TABLE carParks (name text, latitude float, longitude float, capacity int, PRIMARY KEY (name));
+// payment opportunities? cash, debit card, credit card, yellow brick, ...
+// bemand?
+// toegang to OV?
+// bij winkels / horeca / theater / stadion?
 
 CREATE TABLE products (user_name text, product_category text, product_name text, score int, insertion_time timeuuid, PRIMARY KEY (user_name, product_category, product_name));
 CREATE TABLE users (user_name text, top_product_category text, update_time timeuuid, PRIMARY KEY (user_name));

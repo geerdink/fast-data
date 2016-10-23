@@ -12,14 +12,15 @@ import org.apache.spark.streaming.kafka010.ConsumerStrategies.Subscribe
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 import org.apache.spark.mllib.linalg._
 
-class ParkingLotUpdater extends LambdaBase {
+class CarParkUpdater extends LambdaBase {
+
+
+
   // initialize Spark MLlib and Streaming
   val conf = new SparkConf().setAppName("fast-data-social-media").setMaster("local[*]")
   val sc = new SparkContext(conf)
   val ssc = new StreamingContext(conf, Seconds(5)) // batch interval = 5 sec
 
-  // load machine learning model from disk
-  val model = LinearRegressionModel.load(sc, "/home/models/parking.model")
 
   val kafkaParams = Map[String, String]("metadata.broker.list" -> "localhost:9092")
   val kafkaTopics = Array("test", "social_media")
@@ -40,7 +41,7 @@ class ParkingLotUpdater extends LambdaBase {
     // get a new prediction for the top user category
     //val value = model.predict(vector)
     // store the predicted category value
-    //val user = new ParkingLot(sme.userName, ParkingLotHelper.getCategory(value))
+    //val user = new CarPark(sme.userName, ParkingLotHelper.getCategory(value))
     //CassandraHelper.updateUserCategory(user)
   }
 

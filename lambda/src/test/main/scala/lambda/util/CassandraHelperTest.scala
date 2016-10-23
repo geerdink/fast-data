@@ -2,7 +2,7 @@ package lambda.util
 
 import org.scalatest._
 import Matchers._
-import lambda.domain.ParkingLotScoreHelper
+import lambda.domain.CarParkScoreHelper
 
 class CassandraHelperTest extends FunSpec {
 
@@ -11,9 +11,9 @@ class CassandraHelperTest extends FunSpec {
       CassandraHelper.log("This is a test message, created in a unit test")
     }
 
-    it ("should convert a string to a parkingLotScore") {
+    it ("should convert a string to a car park score") {
 
-      // val ps = ParkingLotScoreHelper.createParkingLotScore("name=Test,productcategory=Phones,productName=iPhone,score=3")
+      // val ps = CarParkScoreHelper.createParkingLotScore("name=Test,productcategory=Phones,productName=iPhone,score=3")
 
      // ps.name shouldBe "Test"
      // ps.productCategory shouldBe "Phones"

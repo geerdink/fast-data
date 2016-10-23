@@ -10,6 +10,7 @@ import lambda._
 import lambda.domain._
 import lambda.util.{CassandraHelper, CassandraWriterActor}
 import org.apache.kafka.common.serialization.StringDeserializer
+import org.apache.spark.mllib.regression.LinearRegressionModel
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -67,11 +68,13 @@ object ParkingGuide extends LambdaBase {
   // 3. enrich events -> create feature set
 
   // 4. predict capacity for each parking lot (score feature sets)
+  // load machine learning model from disk
+  val model = LinearRegressionModel.load(ssc, "/home/models/parking.model")
 
   // 5. update scores in database
 
   stream
-    .map(event => ParkingLotScoreHelper.createParkingLotScore(event.value))    // DStream[ParkingLotScore]
+    .map(event => CarParkScoreHelper.createParkingLotScore(event.value))    // DStream[CarParkScore]
     .foreachRDD(rdd => rdd.foreach(score => CassandraHelper.log(score.name + " = " + score.score)))
 
   // visualize
