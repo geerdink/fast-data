@@ -1,7 +1,7 @@
 package lambda.util
 
 import akka.actor.{Actor, ActorLogging, Props}
-import lambda.data._
+import lambda.domain._
 
 object CassandraWriterActor {
   def props = Props(classOf[CassandraWriterActor])
@@ -13,7 +13,7 @@ class CassandraWriterActor extends Actor with ActorLogging {
   import CassandraWriterActor._
 
   def receive = {
-    case ps : ProductScore =>
+    case ps : ParkingLotScore =>
       try {
         CassandraHelper.insertScore(ps)
       }
@@ -23,9 +23,9 @@ class CassandraWriterActor extends Actor with ActorLogging {
           self ! Continue
         }
       }
-    case sme : SocialMediaEvent =>
+    case sme : CarLocationEvent =>
       try {
-        CassandraHelper.insertSocialMediaEvent(sme)
+        //CassandraHelper.insertSocialMediaEvent(sme)
       }
       catch {
         case e: Exception => {
@@ -33,9 +33,9 @@ class CassandraWriterActor extends Actor with ActorLogging {
           self ! Continue
         }
       }
-    case uuc : User =>
+    case uuc : ParkingLot =>
       try {
-        CassandraHelper.updateUserCategory(uuc)
+        //CassandraHelper.updateUserCategory(uuc)
       }
       catch {
         case e: Exception => {
