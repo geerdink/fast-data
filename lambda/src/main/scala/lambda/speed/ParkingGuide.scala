@@ -8,6 +8,7 @@ import org.apache.spark.streaming.kafka010.ConsumerStrategies.Subscribe
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 import lambda._
 import lambda.domain._
+import lambda.rules.LocationFilter
 import lambda.util.{CassandraHelper, CassandraWriterActor}
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.apache.spark.mllib.regression.LinearRegressionModel
@@ -37,7 +38,6 @@ object ParkingGuide extends LambdaBase {
 //  val kafkaDirectStream = KafkaUtils.createDirectStream[String, String, StringDecoder, StringDecoder](
 //    ssc, kafkaParams, Set("cars"))
 //
-//
 //  // store product scores from search history
 //  kafkaDirectStream
 //    .map(rdd => ProductScoreHelper.createProductScore(rdd._2))
@@ -64,23 +64,30 @@ object ParkingGuide extends LambdaBase {
     Subscribe[String, String](topics, kafkaParams))
 
   // 2. apply business rules (filter)
+  val filtered = stream
+    .map(event => CarLocationEventHelper.createCarLocationEvent(event.value))
+    .filter(LocationFilter.filterLocation(_))
+
+  // store car locations (update or create)
+  filtered.map(cle => CassandraHelper.insertCarLocation(cle))
 
   // 3. enrich events -> create feature set
 
+
   // 4. predict capacity for each parking lot (score feature sets)
   // load machine learning model from disk
-  val model = LinearRegressionModel.load(ssc, "/home/models/parking.model")
+  //val model = LinearRegressionModel.load(ssc, "/home/models/parking.model")
 
   // 5. update scores in database
 
-  stream
-    .map(event => CarParkScoreHelper.createParkingLotScore(event.value))    // DStream[CarParkScore]
-    .foreachRDD(rdd => rdd.foreach(score => CassandraHelper.log(score.name + " = " + score.score)))
-
-  // visualize
-  stream.print
-
-  stream.foreachRDD(rdd => log.info("RDD size = " + rdd.collect.size)) //.foreach(r => log.info(r)))
+//  stream
+//    .map(event => CarParkScoreHelper.createParkingLotScore(event.value))    // DStream[CarParkScore]
+//    .foreachRDD(rdd => rdd.foreach(score => CassandraHelper.log(score.name + " = " + score.score)))
+//
+//  // visualize
+//  stream.print
+//
+//  stream.foreachRDD(rdd => log.info("RDD size = " + rdd.collect.size)) //.foreach(r => log.info(r)))
 
 //  stream.reduceByWindow((lat:Float, long: Float) => lat , Seconds(30))
 

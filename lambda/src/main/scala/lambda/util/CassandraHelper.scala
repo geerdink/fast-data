@@ -52,6 +52,14 @@ object CassandraHelper {
 
     session.execute(query)
   }
+
+  def insertCarLocation(cle: CarLocationEvent): Unit = {
+    // INSERT is an upsert; it creates new records or updates old ones
+    val query = "INSERT INTO fastdata.cars (ipaddress, latitude, longitude, update_time) VALUES " +
+      s"('${cle.ipAddress}', ${cle.latitude}, ${cle.longitude}, now())"
+
+    session.execute(query)
+  }
 //
 //  def insertSocialMediaEvent(socialMediaEvent: CarLocationEvent): Unit = {
 //    val query = s"INSERT INTO fastdata.social (user_name, message) VALUES ('${socialMediaEvent.userName}', '${socialMediaEvent.message}', now())"

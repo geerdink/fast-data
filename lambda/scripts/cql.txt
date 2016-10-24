@@ -30,6 +30,9 @@ CREATE TABLE carParks (name text, latitude float, longitude float, capacity int,
 // toegang to OV?
 // bij winkels / horeca / theater / stadion?
 
+CREATE TABLE cars (ipaddress text, latitude float, longitude float, update_time timeuuid, PRIMARY KEY (ipaddress));
+
+
 CREATE TABLE products (user_name text, product_category text, product_name text, score int, insertion_time timeuuid, PRIMARY KEY (user_name, product_category, product_name));
 CREATE TABLE users (user_name text, top_product_category text, update_time timeuuid, PRIMARY KEY (user_name));
 CREATE TABLE social (user_name text, message text, insertion_time timeuuid, PRIMARY KEY (user_name, message));
