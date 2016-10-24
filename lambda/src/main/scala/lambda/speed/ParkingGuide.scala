@@ -63,23 +63,24 @@ object ParkingGuide extends LambdaBase {
     PreferConsistent,
     Subscribe[String, String](topics, kafkaParams))
 
-  // 2. apply business rules (filter)
-  val filtered = stream
+  // change to business events
+  val mapped = stream
     .map(event => CarLocationHelper.createCarLocation(event.value))
+
+  // 2. apply business rules (filter)
+  val filtered = mapped
     //.filter(LocationFilter.filterLocation(_))
 
      // .foreachRDD(rdd => rdd.foreach())
 
-    // recalculate the distribution of each car park in the neighborhood
-
-
-    // store car locations (update or create) AND update car park features
+    // store car locations (update or create)
       .foreachRDD(rdd => rdd.foreach(cle => {
-
         CassandraHelper.insertCarLocation(cle)
       }))
 
-
+  // recalculate the distribution of each car park in the neighborhood
+  mapped.map(cl => )
+  // update car park features
 
   // 3. enrich events -> create feature set
 

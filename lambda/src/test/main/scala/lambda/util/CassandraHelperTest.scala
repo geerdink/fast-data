@@ -14,5 +14,12 @@ class CassandraHelperTest extends FunSpec {
       val cle = CarLocationHelper.createCarLocation("10.34.25.15,11.45,39.38")
       CassandraHelper.insertCarLocation(cle)
     }
+
+    it ("should get a list of the car park features") {
+      val features = CassandraHelper.getCarParkFeatures
+
+      features.foreach(f => println(f.name))
+      assert (features.size > 0)
+    }
   }
 }

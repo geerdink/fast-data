@@ -1,6 +1,12 @@
 package lambda.domain
 
-case class CarLocation(ipAddress: String, latitude: Float, longitude: Float)
+import lambda.util.CassandraHelper
+
+case class CarLocation(ipAddress: String, latitude: Float, longitude: Float) {
+  def getCarParksInNeighborhood: List[CarPark] = {
+    CassandraHelper
+  }
+}
 
 object CarLocationHelper {
   def createCarLocation(input: String): CarLocation = {

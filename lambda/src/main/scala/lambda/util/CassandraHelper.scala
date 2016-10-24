@@ -1,8 +1,10 @@
 package lambda.util
 
 import java.net.URI
+import java.util
 
-import com.datastax.driver.core.{Cluster, ConsistencyLevel, QueryOptions}
+import com.datastax.driver.core._
+import com.datastax.driver.mapping.MappingManager
 import lambda.domain._
 import org.slf4j.{Logger, LoggerFactory}
 
@@ -10,6 +12,7 @@ object CassandraHelper {
   val log = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME)
   val uri = CassandraConnectionUri("cassandra://localhost:9042")
   val session = createSessionAndInitKeyspace(uri)
+  val mm = new MappingManager(session)
 
   def createSessionAndInitKeyspace(uri: CassandraConnectionUri,
                                    defaultConsistencyLevel: ConsistencyLevel = QueryOptions.DEFAULT_CONSISTENCY_LEVEL) = {
@@ -65,7 +68,7 @@ object CassandraHelper {
   }
 
   def insertCarParkFeatures(carPark: CarPark): Unit = {
-    val query = "INSERT INTO fastdata.carparkfeatures (name, latitude, longitude, capacity, usage, accessibility, openFrom, openUntil, rate, cars) VALUES " +
+    val query = "INSERT INTO fastdata.carparkfeatures (name, latitude, longitude, capacity, usage, accessibility, openFrom, openUntil, rate, cars, update_time) VALUES " +
       s"('${carPark.name}', ${carPark.latitude}, ${carPark.longitude}, ${carPark.capacity}, " +
       s"${carPark.usage}, ${carPark.accessibility}, ${carPark.openFrom}, ${carPark.openUntil}, ${carPark.rate}, " +
       s"${carPark.cars}, now())"
@@ -76,6 +79,26 @@ object CassandraHelper {
   def updateCarParkFeatures(name: String, cars: Float): Unit = {
     val query = s"UPDATE fastdata.carparkfeatures SET cars = $cars WHERE name = $name"
   }
+
+  def getCarParkFeatures: List[CarPark] = {
+    val query = "SELECT * FROM fastdata.carparkfeatures"
+
+    val results = session.execute(query).all
+
+    //    def createList(r: java.util.List[Row], iter: List[CarPark]): List[CarPark] = {
+    //      if (r.isEmpty) iter
+    //      else createList(r.)
+    //    }
+
+    val carParks = new util.ArrayList[CarPark]()
+    results.iterator().forEachRemaining(carParks.add(CarPark(
+      _.getString(0)
+    )))
+
+    carParks
+    // TODO: use mapping
+  }
+
 //
 //  def insertSocialMediaEvent(socialMediaEvent: CarLocation): Unit = {
 //    val query = s"INSERT INTO fastdata.social (user_name, message) VALUES ('${socialMediaEvent.userName}', '${socialMediaEvent.message}', now())"

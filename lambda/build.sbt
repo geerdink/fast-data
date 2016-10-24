@@ -16,11 +16,12 @@ resolvers ++= Seq(
   Resolver.url("bintray-sbt-plugins", url("http://dl.bintray.com/sbt/sbt-plugin-releases"))(Resolver.ivyStylePatterns)
 )
 
-libraryDependencies ++= {
-  val sparkVersion = "2.0.1"
-  val akkaVersion = "2.3.9"
-  val sprayVersion = "1.3.3"
-  Seq(
+val sparkVersion = "2.0.1"
+val akkaVersion = "2.3.9"
+val sprayVersion = "1.3.3"
+val cassandraDriverVersion = "3.1.1"
+
+libraryDependencies ++= Seq(
     "org.apache.spark" %% "spark-core" % sparkVersion,
     "org.apache.spark" %% "spark-hive" % sparkVersion,
     "org.apache.spark" %% "spark-sql" % sparkVersion,
@@ -35,10 +36,10 @@ libraryDependencies ++= {
     "io.spray" %% "spray-testkit" % sprayVersion % "test",
     "io.spray" %% "spray-json" % "1.3.2",
     "org.scalatest" %% "scalatest" % "2.2.6" % "test",
-    "com.datastax.cassandra" % "cassandra-driver-core" % "3.0.0",
+    "com.datastax.cassandra" % "cassandra-driver-core" % cassandraDriverVersion,
+    "com.datastax.cassandra" % "cassandra-driver-mapping" % cassandraDriverVersion,
     "org.scalatest" %% "scalatest" % "3.0.0-M15"
-  )
-}
+)
 
 assemblySettings
 
