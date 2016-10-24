@@ -1,10 +1,13 @@
 package lambda.util
 
 import java.net.URI
+
 import com.datastax.driver.core.{Cluster, ConsistencyLevel, QueryOptions}
 import lambda.domain._
+import org.slf4j.{Logger, LoggerFactory}
 
 object CassandraHelper {
+  val log = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME)
   val uri = CassandraConnectionUri("cassandra://localhost:9042")
   val session = createSessionAndInitKeyspace(uri)
 
@@ -53,15 +56,28 @@ object CassandraHelper {
     session.execute(query)
   }
 
-  def insertCarLocation(cle: CarLocationEvent): Unit = {
+  def insertCarLocation(cle: CarLocation): Unit = {
     // INSERT is an upsert; it creates new records or updates old ones
     val query = "INSERT INTO fastdata.cars (ipaddress, latitude, longitude, update_time) VALUES " +
       s"('${cle.ipAddress}', ${cle.latitude}, ${cle.longitude}, now())"
 
     session.execute(query)
   }
+
+  def insertCarParkFeatures(carPark: CarPark): Unit = {
+    val query = "INSERT INTO fastdata.carparkfeatures (name, latitude, longitude, capacity, usage, accessibility, openFrom, openUntil, rate, cars) VALUES " +
+      s"('${carPark.name}', ${carPark.latitude}, ${carPark.longitude}, ${carPark.capacity}, " +
+      s"${carPark.usage}, ${carPark.accessibility}, ${carPark.openFrom}, ${carPark.openUntil}, ${carPark.rate}, " +
+      s"${carPark.cars}, now())"
+
+    session.execute(query)
+  }
+
+  def updateCarParkFeatures(name: String, cars: Float): Unit = {
+    val query = s"UPDATE fastdata.carparkfeatures SET cars = $cars WHERE name = $name"
+  }
 //
-//  def insertSocialMediaEvent(socialMediaEvent: CarLocationEvent): Unit = {
+//  def insertSocialMediaEvent(socialMediaEvent: CarLocation): Unit = {
 //    val query = s"INSERT INTO fastdata.social (user_name, message) VALUES ('${socialMediaEvent.userName}', '${socialMediaEvent.message}', now())"
 //
 //    session.execute(query)

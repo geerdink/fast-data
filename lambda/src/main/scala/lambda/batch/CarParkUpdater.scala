@@ -27,13 +27,13 @@ class CarParkUpdater extends LambdaBase {
   val kafkaDirectStream = KafkaUtils.createDirectStream[String, String](ssc, PreferConsistent, Subscribe[String, String](kafkaTopics, kafkaParams))
 
   kafkaDirectStream
-    .map(rdd => CarLocationEventHelper.createCarLocationEvent(rdd.value()))
+    .map(rdd => CarLocationHelper.createCarLocation(rdd.value()))
     .foreachRDD(rdd => rdd.foreach(processSocialMediaEvent))
 
   ssc.start() // it's necessary to explicitly tell the StreamingContext to start receiving data
   ssc.awaitTermination()  // wait for the job to finish
 
-  def processSocialMediaEvent(sme: CarLocationEvent): Unit = {
+  def processSocialMediaEvent(sme: CarLocation): Unit = {
     // store the social media message
     //CassandraHelper.insertSocialMediaEvent(sme);
     // feature vector extraction, LabeledPoint: class that represents the features and labels of a data point

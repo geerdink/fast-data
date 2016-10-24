@@ -22,7 +22,7 @@ SELECT log, dateOf(insertion_time) AS date FROM log;
 // - rate  (price per hour)
 // event-based: (updated with each event)
 // - cars  (sum: for all cars in neighborhood, 1 / absolute distance relative to the car park (car-carPark lat/long) )
-CREATE TABLE carParkFeatures (name text, latitude float, longitude float, capacity int, usage float, accessibility float, openFrom int openUntil int, update_time timeuuid, PRIMARY KEY (name));
+CREATE TABLE carParkFeatures (name text, latitude float, longitude float, capacity int, usage float, accessibility float, openFrom int, openUntil int, rate float, cars float, update_time timeuuid, PRIMARY KEY (name));
 
 CREATE TABLE carParks (name text, latitude float, longitude float, capacity int, PRIMARY KEY (name));
 // payment opportunities? cash, debit card, credit card, yellow brick, ...

@@ -23,7 +23,7 @@ class CassandraWriterActor extends Actor with ActorLogging {
           self ! Continue
         }
       }
-    case sme : CarLocationEvent =>
+    case sme : CarLocation =>
       try {
         //CassandraHelper.insertSocialMediaEvent(sme)
       }

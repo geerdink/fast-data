@@ -1,10 +1,10 @@
 package lambda.rules
 
-import lambda.domain.CarLocationEvent
+import lambda.domain.CarLocation
 
 object LocationFilter {
-  def filterLocation(carLoc: CarLocationEvent): Boolean = {
-    carLoc.latitude > 11 && carLoc.latitude < 19 &&
-    carLoc.longitude > 50 && carLoc.longitude < 60
+  def filterLocation(carLoc: CarLocation): Boolean = {
+    carLoc.latitude > 1 && carLoc.latitude < 190 &&
+    carLoc.longitude > 5 && carLoc.longitude < 60
   }
 }

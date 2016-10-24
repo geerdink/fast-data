@@ -65,11 +65,21 @@ object ParkingGuide extends LambdaBase {
 
   // 2. apply business rules (filter)
   val filtered = stream
-    .map(event => CarLocationEventHelper.createCarLocationEvent(event.value))
-    .filter(LocationFilter.filterLocation(_))
+    .map(event => CarLocationHelper.createCarLocation(event.value))
+    //.filter(LocationFilter.filterLocation(_))
 
-  // store car locations (update or create)
-  filtered.map(cle => CassandraHelper.insertCarLocation(cle))
+     // .foreachRDD(rdd => rdd.foreach())
+
+    // recalculate the distribution of each car park in the neighborhood
+
+
+    // store car locations (update or create) AND update car park features
+      .foreachRDD(rdd => rdd.foreach(cle => {
+
+        CassandraHelper.insertCarLocation(cle)
+      }))
+
+
 
   // 3. enrich events -> create feature set
 
@@ -85,7 +95,7 @@ object ParkingGuide extends LambdaBase {
 //    .foreachRDD(rdd => rdd.foreach(score => CassandraHelper.log(score.name + " = " + score.score)))
 //
 //  // visualize
-//  stream.print
+   // filtered.print
 //
 //  stream.foreachRDD(rdd => log.info("RDD size = " + rdd.collect.size)) //.foreach(r => log.info(r)))
 
