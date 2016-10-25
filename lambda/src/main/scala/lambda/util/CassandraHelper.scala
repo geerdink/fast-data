@@ -44,17 +44,8 @@ object CassandraHelper {
     session.execute(s"INSERT INTO fastdata.log (log, insertion_time) VALUES ('$s', now());")
   }
 
-  def insertScores(parkingLotScores: List[CarParkScore]): Unit = {
-    var query = ""
-    parkingLotScores.foreach(parkingLotScore => query += "INSERT INTO fastdata.parkingLotScores (name, score, insertion_time) VALUES " +
-      s"('${parkingLotScore.name}', ${parkingLotScore.score}, now()); ")
-
-    session.execute(query)
-  }
-
-  def insertScore(parkingLotScore: CarParkScore): Unit = {
-    val query = "INSERT INTO fastdata.parkingLotScores (name, score, insertion_time) VALUES " +
-      s"('${parkingLotScore.name}', ${parkingLotScore.score}, now())"
+  def removeOldCarLocations(duration: Int) = {
+    val query = s"DELETE FROM fastdata.cars WHERE now()-update_time < $duration"  // TODO: not good yet
 
     session.execute(query)
   }
@@ -79,7 +70,27 @@ object CassandraHelper {
   def updateCarParkFeatures(carPark: CarPark): Unit = {
     val query = s"UPDATE fastdata.carparkfeatures SET latitude=${carPark.latitude}, longitude=${carPark.longitude}, capacity=${carPark.capacity}, usage=${carPark.usage}, " +
       s"accessibility=${carPark.accessibility}, openFrom=${carPark.openFrom}, openUntil=${carPark.openUntil}, rate=${carPark.rate}, " +
-      s"cars = ${carPark.cars}, score=${carPark.score}, update_time=now() WHERE name = $name"
+      s"cars = ${carPark.cars}, score=${carPark.score}, update_time=now() WHERE name='${carPark.name}'"
+  }
+
+  def getCarParksInNeighborhood(latitude: Float, longitude: Float): List[CarPark] = {
+    val query = s"SELECT * FROM fastdata.carparkfeatures WHERE ABS(latitude-$latitude < 10) AND ABS(longitude-$longitude < 10)"
+
+    val results = session.execute(query).all
+
+    // TODO
+
+    List()
+  }
+
+  def getCarPark(name: String): CarPark = {
+    val query = s"SELECT * FROM fastdata.carparkfeatures WHERE name=$name"
+
+    val results session.execute(query)
+
+    // TODO
+
+    CarPark("Test", 45, 55, 800, 0, 0.3F, 8, 23, 3.2F, 0, 0)
   }
 
   def getCarParkFeatures: List[CarPark] = {
@@ -92,25 +103,23 @@ object CassandraHelper {
     //      else createList(r.)
     //    }
 
-    val carParks = new util.ArrayList[CarPark]()
-    results.iterator().forEachRemaining(carParks.add(CarPark(
-      _.getString(0)
-    )))
+//    val carParks = new util.ArrayList[CarPark]()
+//    results.iterator().forEachRemaining(carParks.add(CarPark(
+//      _.getString(0)
+//    )))
 
-    carParks
-    // TODO: use mapping
+    // TODO
+
+    List()
   }
 
-//
-//  def insertSocialMediaEvent(socialMediaEvent: CarLocation): Unit = {
-//    val query = s"INSERT INTO fastdata.social (user_name, message) VALUES ('${socialMediaEvent.userName}', '${socialMediaEvent.message}', now())"
-//
-//    session.execute(query)
-//  }
-//
-//  def updateUserCategory(user: CarPark): Unit = {
-//    val query = s"UPDATE fastdata.users SET top_product_category = '${user.capacity}', update_time = now() WHERE user_name = '${user.name}'"
-//
-//    session.execute(query)
-//  }
+  def getCarsInNeighborhood(carPark: CarPark): List[CarLocation] = {
+    val query = s"SELECT * FROM fastdata.cars WHERE ABS(latitude-${carPark.latitude} < 10) AND ABS(longitude-${carPark.longitude} < 10)"
+
+    val results = session.execute(query).all
+
+    // TODO
+
+    List()
+  }
 }

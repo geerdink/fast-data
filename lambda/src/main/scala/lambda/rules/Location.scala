@@ -14,7 +14,7 @@ object Location {
       if (remaining.isEmpty)
         list
       else if (Math.abs(remaining.head.latitude - carLoc.latitude) < 10 && Math.abs(remaining.head.longitude - carLoc.longitude) < 10)
-        iter(remaining.tail, list ++ remaining.head)
+        iter(remaining.tail, remaining.head :: list)
       else
         iter(remaining.tail, list)
     }

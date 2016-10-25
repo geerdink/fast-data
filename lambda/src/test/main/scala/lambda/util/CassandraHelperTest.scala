@@ -1,7 +1,7 @@
 package lambda.util
 
 import org.scalatest._
-import lambda.domain.{CarLocationHelper}
+import lambda.domain._
 
 class CassandraHelperTest extends FunSpec {
 

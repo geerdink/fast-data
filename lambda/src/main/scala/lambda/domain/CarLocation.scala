@@ -4,7 +4,7 @@ import lambda.util.CassandraHelper
 
 case class CarLocation(ipAddress: String, latitude: Float, longitude: Float) {
   def getCarParksInNeighborhood: List[CarPark] = {
-    CassandraHelper
+    CassandraHelper.getCarParksInNeighborhood(latitude, longitude)
   }
 }
 

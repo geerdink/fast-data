@@ -6,7 +6,7 @@ import org.scalatest.FunSpec
 class DensityCalculatorTest  extends FunSpec {
   describe("The Density Calculator") {
     it("should create a valid car density vector") {
-      val carPark = CarPark("Test", 40, 50, 300, 0.6F, 0.4F, 6, 23, 1.4F, 0.1F)
+      val carPark = CarPark("Test", 40, 50, 300, 0.6F, 0.4F, 6, 23, 1.4F, 0.1F, 0)
       val carLocations = List(
         CarLocation("ip1", 41, 55),
         CarLocation("ip2", 60, 30),

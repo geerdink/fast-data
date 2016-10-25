@@ -22,25 +22,7 @@ SELECT log, dateOf(insertion_time) AS date FROM log;
 // - rate  (price per hour)
 // event-based: (updated with each event)
 // - cars  (sum: for all cars in neighborhood, 1 / absolute distance relative to the car park (car-carPark lat/long) )
-CREATE TABLE carParkFeatures (name text, latitude float, longitude float, capacity int, usage float, accessibility float, openFrom int, openUntil int, rate float, cars float, update_time timeuuid, PRIMARY KEY (name));
-
-CREATE TABLE carParks (name text, latitude float, longitude float, capacity int, PRIMARY KEY (name));
-// payment opportunities? cash, debit card, credit card, yellow brick, ...
-// bemand?
-// toegang to OV?
-// bij winkels / horeca / theater / stadion?
+// - score (predicted recommendation score)
+CREATE TABLE carParkFeatures (name text, latitude float, longitude float, capacity int, usage float, accessibility float, openFrom int, openUntil int, rate float, cars float, score float, update_time timeuuid, PRIMARY KEY (name));
 
 CREATE TABLE cars (ipaddress text, latitude float, longitude float, update_time timeuuid, PRIMARY KEY (ipaddress));
-
-
-CREATE TABLE products (user_name text, product_category text, product_name text, score int, insertion_time timeuuid, PRIMARY KEY (user_name, product_category, product_name));
-CREATE TABLE users (user_name text, top_product_category text, update_time timeuuid, PRIMARY KEY (user_name));
-CREATE TABLE social (user_name text, message text, insertion_time timeuuid, PRIMARY KEY (user_name, message));
-
-INSERT INTO products (user_name, product_category, product_name, score, insertion_time) VALUES ('Bas', 'phone', 'iPhone 5s', 2, now());
-INSERT INTO users (user_name, top_product_category, update_time) VALUES ('Bas', 'phone', now());
-INSERT INTO social (user_name, message, insertion_time) VALUES ('Bas', 'Op weg naar de winkel voor een nieuwe telefoon!', now());
-
-SELECT user_name, product_category, product_name, dateOf(insertion_time) AS data FROM products;
-
-UPDATE users SET top_product_category = 'test', update_time = now() WHERE user_name = 'Bas'
