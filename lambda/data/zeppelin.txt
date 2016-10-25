@@ -1,0 +1,41 @@
+import org.apache.spark.mllib.regression.LabeledPoint
+import org.apache.spark.mllib.regression.LinearRegressionModel
+import org.apache.spark.mllib.regression.LinearRegressionWithSGD
+
+println("Car park recommendations")
+
+case class CarPark(name: String, latitude: Float, longitude: Float, capacity: Int, usage: Float, accessibility: Float, openFrom: Int, openUntil: Int, rate: Float, cars: Float, score: Float)
+
+// load data
+var file = sc.textFile("/home/bas/data.csv")
+val records = file
+   .map(l => l.split(","))
+   .map(parts => CarPark(parts(0), parts(1).toFloat, parts(2).toFloat, parts(3).toInt, parts(4).toFloat, parts(5),toFloat, parts(6).toInt, parts(7).toInt, parts(8).toFloat, 0, 0))
+
+// prepare data, create vector
+val data = records.map(record => LabeledPoint(record.score, Vectors.dense(record.cars, record.rate, record.usage))).collect()
+val rdd = spark.sparkContext.makeRDD(data)
+
+// separate training and test set
+val splits = rdd.randomSplit(Array(0.8, 0.2))
+val training = splits(0).cache()
+val test = splits(1).cache()
+
+// train the model
+val algorithm = new LinearRegressionWithSGD()
+algorithmh.setIntercept(true)
+algorithm.optimizer.setNumIterations(100).setStepSize(0.1)
+val model = algorithm.run(training)
+
+println(model.intercept)
+println(model.weights)
+
+// do a test run
+val prediction = model.predict(test.map(_.features))
+
+// check output
+val predictionAndLabel = prediction.zip(test.map(_.label))
+predictionAndLabel.count()
+predictionAndLabel.take(20).foreach((p) => println("Prediction=" + p._1 + ", actual=" + p._2))
+
+model_health.save(sc, "/home/bas/models/health")
