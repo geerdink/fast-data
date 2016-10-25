@@ -68,16 +68,18 @@ object CassandraHelper {
   }
 
   def insertCarParkFeatures(carPark: CarPark): Unit = {
-    val query = "INSERT INTO fastdata.carparkfeatures (name, latitude, longitude, capacity, usage, accessibility, openFrom, openUntil, rate, cars, update_time) VALUES " +
+    val query = "INSERT INTO fastdata.carparkfeatures (name, latitude, longitude, capacity, usage, accessibility, openFrom, openUntil, rate, cars, score, update_time) VALUES " +
       s"('${carPark.name}', ${carPark.latitude}, ${carPark.longitude}, ${carPark.capacity}, " +
       s"${carPark.usage}, ${carPark.accessibility}, ${carPark.openFrom}, ${carPark.openUntil}, ${carPark.rate}, " +
-      s"${carPark.cars}, now())"
+      s"${carPark.cars}, ${carPark.score}, now())"
 
     session.execute(query)
   }
 
-  def updateCarParkFeatures(name: String, cars: Float): Unit = {
-    val query = s"UPDATE fastdata.carparkfeatures SET cars = $cars WHERE name = $name"
+  def updateCarParkFeatures(carPark: CarPark): Unit = {
+    val query = s"UPDATE fastdata.carparkfeatures SET latitude=${carPark.latitude}, longitude=${carPark.longitude}, capacity=${carPark.capacity}, usage=${carPark.usage}, " +
+      s"accessibility=${carPark.accessibility}, openFrom=${carPark.openFrom}, openUntil=${carPark.openUntil}, rate=${carPark.rate}, " +
+      s"cars = ${carPark.cars}, score=${carPark.score}, update_time=now() WHERE name = $name"
   }
 
   def getCarParkFeatures: List[CarPark] = {

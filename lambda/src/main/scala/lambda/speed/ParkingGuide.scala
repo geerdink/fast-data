@@ -1,13 +1,10 @@
 package lambda.speed
 
-import kafka.serializer.StringDecoder
 import org.apache.spark.SparkConf
 import lambda._
 import lambda.domain._
-import lambda.rules.LocationFilter
+import lambda.rules.Location
 import lambda.util.{CassandraHelper}
-import org.apache.kafka.common.serialization.StringDeserializer
-import org.apache.spark.mllib.regression.LinearRegressionModel
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -16,6 +13,11 @@ object ParkingGuide extends LambdaBase {
   log.info("Fast data application started.")
 
   CassandraHelper.log("Started!")
+
+  // ------- DATA SCIENCE ------- //
+
+  import org.apache.spark.mllib.regression.LinearRegressionModel
+  val model = LinearRegressionModel.load(ssc, "/home/models/parking.model")
 
   // ------- KAFKA ------- //
 
@@ -32,7 +34,7 @@ object ParkingGuide extends LambdaBase {
   val topics = Array("cars")
   val kafkaParams = Map[String, Object]("bootstrap.servers" -> "localhost:9092")
 
-  // subscribe to stream -> create Spark DStream
+  // get events in a Spark DStream
   val stream = KafkaUtils.createDirectStream[String, String](
     ssc,
     PreferConsistent,
@@ -41,23 +43,35 @@ object ParkingGuide extends LambdaBase {
   // ------- STREAM ------- //
 
   // change raw data to business events
-  val mapped = stream
+  val events = stream
     .map(event => CarLocationHelper.createCarLocation(event.value))
 
-  // apply business rules and
-  val filtered = mapped
-      .filter(LocationFilter.filterLocation(_))    // only select cars in local area
-      .map()   // select the relevant
+  // apply business rules
+  val filtered = events
+    .filter(Location.filterLocalArea(_))    // only select cars in local area
 
-     // .foreachRDD(rdd => rdd.foreach())
-
-    // store car locations (update or create)
-      .foreachRDD(rdd => rdd.foreach(cle => {
-        CassandraHelper.insertCarLocation(cle)
-      }))
+  // store car locations (update or create)
+  filtered
+    .foreachRDD(rdd => rdd.foreach(cle => { CassandraHelper.insertCarLocation(cle) }))
 
   // recalculate the distribution of each car park in the neighborhood
-  mapped.map(cl => )
+  filtered
+    // get feature set
+    .map(cl => Location.getLocalCarParks(cl))
+    .foreachRDD(rdd => rdd.foreach(carParks => carParks.foreach { cp =>
+      // combine event with previous events (running average)
+      val carsInNeighborhood = cp.cars + CassandraHelper.getCarsInNeighborhood(cp)
+      val updatedCarPark = cp.setCarsInNeighborhood(carsInNeighborhood)
+
+      // predict  score (machine learning)
+      val score = model.predict(Vector(updatedCarPark))
+
+      // update feature set and score
+      val scoredCarPark = updatedCarPark.
+      CassandraHelper.updateCarParkFeatures(updatedCarPark)
+    }
+  ))
+
   // update car park features
 
   // 3. enrich events -> create feature set
