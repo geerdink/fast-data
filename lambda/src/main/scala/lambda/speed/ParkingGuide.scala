@@ -2,14 +2,10 @@ package lambda.speed
 
 import kafka.serializer.StringDecoder
 import org.apache.spark.SparkConf
-import org.apache.spark.streaming.kafka010._
-import org.apache.spark.streaming.kafka010.LocationStrategies.PreferConsistent
-import org.apache.spark.streaming.kafka010.ConsumerStrategies.Subscribe
-import org.apache.spark.streaming.{Seconds, StreamingContext}
 import lambda._
 import lambda.domain._
 import lambda.rules.LocationFilter
-import lambda.util.{CassandraHelper, CassandraWriterActor}
+import lambda.util.{CassandraHelper}
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.apache.spark.mllib.regression.LinearRegressionModel
 import org.slf4j.Logger
@@ -21,55 +17,37 @@ object ParkingGuide extends LambdaBase {
 
   CassandraHelper.log("Started!")
 
-  // initialize Cassandra writer
-  //val cassandraWriter = system.actorOf(CassandraWriterActor.props)
+  // ------- KAFKA ------- //
+
+  import org.apache.spark.streaming.{Seconds, StreamingContext}
+  import org.apache.spark.streaming.kafka010._
+  import org.apache.spark.streaming.kafka010.LocationStrategies.PreferConsistent
+  import org.apache.spark.streaming.kafka010.ConsumerStrategies.Subscribe
 
   // initialize Spark Streaming
   val conf = new SparkConf().setAppName("fast-data").setMaster("local[*]")
-  val ssc = new StreamingContext(conf, Seconds(2)) // batch interval = 2 sec
+  val ssc = new StreamingContext(conf, Seconds(1)) // batch interval = 1 sec
 
-//  val lines = ssc.socketTextStream("localhost", 9999)
-//  val words = lines.flatMap(_.split(" "))
-//  val pairs = words.map(word => (word, 1))
-//  val counts = pairs.reduceByKey(_ + _)
-//  counts.print
-
-//  val kafkaParams = Map[String, String]("metadata.broker.list" -> "localhost:9092")
-//  val kafkaDirectStream = KafkaUtils.createDirectStream[String, String, StringDecoder, StringDecoder](
-//    ssc, kafkaParams, Set("cars"))
-//
-//  // store product scores from search history
-//  kafkaDirectStream
-//    .map(rdd => ProductScoreHelper.createProductScore(rdd._2))
-//    .filter(_.productCategory != "Sneakers")
-//    .foreachRDD(rdd =>  rdd.foreach(CassandraHelper.insertScore))
-//
-//    //.foreachRDD(rdd => rdd.foreach(cassandraWriter ! CassandraHelper.updateScore(_)))
-
-
-  // 1. get event data from sensors (cars)
+  // set parameters for Kafka connection
   val topics = Array("cars")
-  val kafkaParams = Map[String, Object](
-    "bootstrap.servers" -> "localhost:9092",
-    "key.deserializer" -> classOf[StringDeserializer],
-    "value.deserializer" -> classOf[StringDeserializer],
-    "group.id" -> "example",
-    "auto.offset.reset" -> "latest",
-    "enable.auto.commit" -> (false: java.lang.Boolean)
-  )
+  val kafkaParams = Map[String, Object]("bootstrap.servers" -> "localhost:9092")
 
+  // subscribe to stream -> create Spark DStream
   val stream = KafkaUtils.createDirectStream[String, String](
     ssc,
     PreferConsistent,
     Subscribe[String, String](topics, kafkaParams))
 
-  // change to business events
+  // ------- STREAM ------- //
+
+  // change raw data to business events
   val mapped = stream
     .map(event => CarLocationHelper.createCarLocation(event.value))
 
-  // 2. apply business rules (filter)
+  // apply business rules and
   val filtered = mapped
-    //.filter(LocationFilter.filterLocation(_))
+      .filter(LocationFilter.filterLocation(_))    // only select cars in local area
+      .map()   // select the relevant
 
      // .foreachRDD(rdd => rdd.foreach())
 
@@ -84,12 +62,15 @@ object ParkingGuide extends LambdaBase {
 
   // 3. enrich events -> create feature set
 
+  // ------- DATA SCIENCE ------- //
 
   // 4. predict capacity for each parking lot (score feature sets)
   // load machine learning model from disk
   //val model = LinearRegressionModel.load(ssc, "/home/models/parking.model")
 
-  // 5. update scores in database
+  // ------- CASSANDRA ------- //
+
+  // update scores in database
 
 //  stream
 //    .map(event => CarParkScoreHelper.createParkingLotScore(event.value))    // DStream[CarParkScore]
