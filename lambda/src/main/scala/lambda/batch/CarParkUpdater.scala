@@ -16,18 +16,18 @@ class CarParkUpdater extends LambdaBase {
   val spark = SparkSession.builder.appName("batch-data").master("local[*]")
     .getOrCreate()
 
-  // get predictive model
+  // getCustomer predictive model
   val model = LinearRegressionModel.load(spark.sparkContext, "/opt/models/parking.model")
 
   // clean up (remove car data older than 60 seconds)
   CassandraHelper.removeOldCarLocations(60)
 
-  // get car park data
+  // getCustomer car park data
   val textFile = spark.sparkContext.textFile("hdfs://data/latest.csv")
 
   // iterate over all car parks in the data set
   textFile.map(line => CarParkHelper.createCarPark(line)).map{cp =>
-    // get recent set of car data (running average)
+    // getCustomer recent set of car data (running average)
     val carsInNeighborhood = DensityCalculator.calculateDensity(cp, getCarsInNeighborhood(cp))
     val updatedCarPark = cp.setCarsInNeighborhood(carsInNeighborhood)
 

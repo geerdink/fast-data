@@ -15,7 +15,7 @@ class CassandraHelperTest extends FunSpec {
       CassandraHelper.insertCarLocation(cle)
     }
 
-    it ("should get a list of the car park features") {
+    it ("should getCustomer a list of the car park features") {
       val features = CassandraHelper.getCarParkFeatures
 
       features.foreach(f => println(f.name))

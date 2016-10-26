@@ -31,7 +31,7 @@ object ParkingGuide extends LambdaBase {
   val topics = Array("cars")
   val kafkaParams = Map[String, Object]("bootstrap.servers" -> "localhost:9092")
 
-  // get events in a Spark DStream
+  // getCustomer events in a Spark DStream
   val stream = KafkaUtils.createDirectStream[String, String](
     ssc,
     PreferConsistent,
@@ -58,7 +58,7 @@ object ParkingGuide extends LambdaBase {
 
   // recalculate the distribution of each car park in the neighborhood
   filtered
-    // get feature set
+    // getCustomer feature set
     .map(cl => Location.getLocalCarParks(cl))
     .foreachRDD(rdd => rdd.foreach(carParks => carParks.foreach { cp =>
       // combine event with previous events (running average)
