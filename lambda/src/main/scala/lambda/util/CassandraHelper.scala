@@ -12,7 +12,6 @@ object CassandraHelper {
   val log = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME)
   val uri = CassandraConnectionUri("cassandra://localhost:9042")
   val session = createSessionAndInitKeyspace(uri)
-  val mm = new MappingManager(session)
 
   def createSessionAndInitKeyspace(uri: CassandraConnectionUri,
                                    defaultConsistencyLevel: ConsistencyLevel = QueryOptions.DEFAULT_CONSISTENCY_LEVEL) = {
