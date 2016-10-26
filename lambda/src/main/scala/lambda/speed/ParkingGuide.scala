@@ -16,11 +16,6 @@ object ParkingGuide extends LambdaBase {
 
   CassandraHelper.log("Started!")
 
-  // ------- DATA SCIENCE ------- //
-
-  import org.apache.spark.mllib.regression.LinearRegressionModel
-  val model = LinearRegressionModel.load(ssc.sparkContext, "/opt/models/parking.model")
-
   // ------- KAFKA ------- //
 
   import org.apache.spark.streaming.{Seconds, StreamingContext}
@@ -41,6 +36,11 @@ object ParkingGuide extends LambdaBase {
     ssc,
     PreferConsistent,
     Subscribe[String, String](topics, kafkaParams))
+
+  // ------- DATA SCIENCE ------- //
+
+  import org.apache.spark.mllib.regression.LinearRegressionModel
+  val model = LinearRegressionModel.load(ssc.sparkContext, "/opt/models/parking.model")
 
   // ------- STREAM ------- //
 

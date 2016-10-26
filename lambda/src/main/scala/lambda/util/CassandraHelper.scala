@@ -86,7 +86,7 @@ object CassandraHelper {
   def getCarPark(name: String): CarPark = {
     val query = s"SELECT * FROM fastdata.carparkfeatures WHERE name=$name"
 
-    val results session.execute(query)
+    val results = session.execute(query)
 
     // TODO
 

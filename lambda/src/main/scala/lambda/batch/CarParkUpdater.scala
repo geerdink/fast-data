@@ -6,12 +6,7 @@ import lambda.util._
 import lambda.domain._
 import lambda.rules.DensityCalculator
 import lambda.util.CassandraHelper._
-import org.apache.spark.{SparkConf, SparkContext}
-import org.apache.spark.mllib.regression._
-import org.apache.spark.streaming.kafka010._
-import org.apache.spark.streaming.kafka010.LocationStrategies.PreferConsistent
-import org.apache.spark.streaming.kafka010.ConsumerStrategies.Subscribe
-import org.apache.spark.streaming.{Seconds, StreamingContext}
+import org.apache.spark.mllib.regression.LinearRegressionModel
 import org.apache.spark.mllib.linalg._
 import org.apache.spark.sql.SparkSession
 
@@ -20,6 +15,9 @@ class CarParkUpdater extends LambdaBase {
   // initialize Spark for batch processing
   val spark = SparkSession.builder.appName("batch-data").master("local[*]")
     .getOrCreate()
+
+  // get predictive model
+  val model = LinearRegressionModel.load(spark.sparkContext, "/opt/models/parking.model")
 
   // clean up (remove car data older than 60 seconds)
   CassandraHelper.removeOldCarLocations(60)

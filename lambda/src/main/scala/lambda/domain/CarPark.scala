@@ -11,11 +11,11 @@ case class CarPark(name: String, latitude: Float, longitude: Float, capacity: In
     CarPark(name, latitude, longitude, capacity, usage, accessibility, openFrom, openUntil, rate, carsInNeighborhood, score)
   }
 
-  def setScore(newScore: Float): CarPark = {
-    CarPark(name, latitude, longitude, capacity, usage, accessibility, openFrom, openUntil, rate, cars, newScore)
+  def setScore(newScore: Double): CarPark = {
+    CarPark(name, latitude, longitude, capacity, usage, accessibility, openFrom, openUntil, rate, cars, newScore.toFloat)
   }
 
-  def featureVectorArray = Array(latitude, longitude, capacity, usage, accessibility, openFrom, openUntil, rate, cars)
+  def featureVectorArray = Array(latitude.toDouble, longitude.toDouble, capacity.toDouble, usage.toDouble, accessibility.toDouble, openFrom.toDouble, openUntil.toDouble, rate.toDouble, cars.toDouble)
 }
 
 object CarParkHelper {
@@ -24,6 +24,6 @@ object CarParkHelper {
     */
   def createCarPark(input: String): CarPark = {
     val parts = input.split(',')
-    CarPark(parts(0), parts(1).toFloat, parts(2).toFloat, parts(3).toInt, parts(4).toFloat, parts(5),toFloat, parts(6).toInt, parts(7).toInt, parts(8).toFloat, 0, 0)
+    CarPark(parts(0), parts(1).toFloat, parts(2).toFloat, parts(3).toInt, parts(4).toFloat, parts(5).toInt, parts(6).toInt, parts(7).toInt, parts(8).toFloat, 0, 0)
   }
 }
