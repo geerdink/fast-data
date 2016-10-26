@@ -17,15 +17,6 @@ import org.apache.spark.sql.SparkSession
 
 class CarParkUpdater extends LambdaBase {
 
-//
-//  Get car park data
-//  Clean up (remove old car data)
-//  For each car park:
-//    Get recent set of car data (running average)
-//    Update feature set
-//    Predict  score (machine learning) and update database
-//
-
   // initialize Spark for batch processing
   val spark = SparkSession.builder.appName("batch-data").master("local[*]")
     .getOrCreate()
